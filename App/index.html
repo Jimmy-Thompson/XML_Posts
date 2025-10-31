@@ -755,10 +755,16 @@
         .search-card {
           padding: 20px;
           gap: 12px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
         }
 
         .search-group {
-          flex: 1 1 100%;
+          flex: auto;
+        }
+
+        .search-group:first-child {
+          grid-column: 1 / -1;
         }
 
         .search-label {
@@ -771,11 +777,10 @@
 
         .search-select {
           padding: 10px 14px;
-          max-width: 90%;
         }
 
         .search-actions {
-          flex: 1 1 100%;
+          grid-column: 1 / -1;
           justify-content: stretch;
         }
 
