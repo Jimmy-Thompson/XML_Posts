@@ -19,7 +19,8 @@ GigSafe Job Board is a job aggregator for delivery driver and logistics position
 ```
 GigSafeJobBoard/
 ├── App/
-│   ├── landing.html           # Main frontend interface
+│   ├── index.html             # Main frontend interface
+│   ├── post-job.html          # Job posting form page
 │   └── cities_by_state.json   # Location filter data
 ├── shared/
 │   └── db.js                  # SQLite database connection
@@ -36,7 +37,7 @@ GigSafeJobBoard/
 - **Unified Server:** Port 5000 (Express.js serves both static frontend and API endpoints)
 
 ### Database Schema
-- **jobs:** Job listings with title, company, location, requirements, benefits, etc.
+- **jobs:** Job listings with title, company, location, requirements, benefits, etc. Includes `submitted_at` column to track user-submitted jobs for 24-hour visibility.
 - **subscribers:** Email subscriptions for job alerts
 - **subscriber_certifications:** Uploaded certification files
 
@@ -46,6 +47,7 @@ GigSafeJobBoard/
 - Vehicle type filtering (Van, Box Truck, Car, etc.)
 - Certification search functionality
 - Job alerts subscription with certification upload
+- **Job posting form** - Users can submit jobs that appear for 24 hours
 - Infinite scroll pagination
 - Responsive design for mobile, tablet, and desktop
 
@@ -62,6 +64,24 @@ Query Parameters:
 - `city` - Filter by city
 - `vehicle` - Filter by vehicle requirement
 - `certifications` - Comma-separated certification list
+
+### POST /api/jobs
+Submit a new job posting (visible for 24 hours).
+
+Body (JSON):
+- `job_url` (required) - Application URL
+- `title` (required) - Job title
+- `company` (required) - Company name
+- `city` (required) - City
+- `state` (required) - 2-letter state code
+- `description` (required) - Job description
+- `pay` (required) - Compensation details
+- `address` - Full street address (optional)
+- `general_requirements` - Job requirements (optional)
+- `schedule_details` - Work schedule (optional)
+- `benefits` - Benefits offered (optional)
+- `vehicle_requirements` - Vehicle requirements (optional)
+- `insurance_requirement` - Insurance requirements (optional)
 
 ### POST /api/subscribe
 Subscribe to job alerts with optional certification uploads.
@@ -98,6 +118,14 @@ Jobs aggregated from:
 - US-Pack (1 job)
 
 ## Recent Changes
+- **2025-10-31:** Job Posting Feature
+  - Added `submitted_at` column to jobs table for tracking user-submitted jobs
+  - Created POST /api/jobs endpoint for job submissions with validation
+  - Implemented 24-hour filtering: user-submitted jobs automatically hide after 24 hours (remain in database)
+  - Built post-job.html form page with all job fields and success modal preview
+  - Added "Post a Job" link to main navigation
+  - Scraped jobs (submitted_at = NULL) unaffected by time-based filtering
+
 - **2025-10-31:** Configured for Replit environment
   - Consolidated frontend and backend to run on single Express server (port 5000)
   - Renamed landing.html to index.html for automatic root serving
@@ -114,7 +142,9 @@ Jobs aggregated from:
 None documented yet.
 
 ## Notes
-- The database is pre-populated with 1,186 job listings
+- The database is pre-populated with 1,186 scraped job listings
 - PostHog analytics is configured with project API key
 - File uploads are stored in `uploads/certifications/` directory
 - Maximum file upload size is 10MB per file
+- User-submitted jobs are visible for 24 hours, then automatically hidden (not deleted)
+- Job posting flow: Form → Validation → Insert with `submitted_at = NOW()` → Success modal preview
