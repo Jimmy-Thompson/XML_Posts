@@ -73,6 +73,9 @@ function buildFilters(query) {
 function buildWhereClause(filters, params) {
   const whereConditions = [];
 
+  // Filter out user-submitted jobs older than 24 hours
+  whereConditions.push(`(submitted_at IS NULL OR datetime(submitted_at) > datetime('now', '-24 hours'))`);
+
   if (filters.keyword) {
     whereConditions.push(`(
       title LIKE ? COLLATE NOCASE OR
@@ -118,7 +121,7 @@ function buildWhereClause(filters, params) {
     }
   }
 
-  return whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+  return `WHERE ${whereConditions.join(' AND ')}`;
 }
 
 app.get('/api/jobs', (req, res) => {
@@ -194,6 +197,94 @@ app.get('/api/jobs', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch jobs'
+    });
+  }
+});
+
+app.post('/api/jobs', (req, res) => {
+  const {
+    job_url,
+    title,
+    company,
+    city,
+    state,
+    address,
+    description,
+    general_requirements,
+    pay,
+    benefits,
+    vehicle_requirements,
+    insurance_requirement,
+    schedule_details
+  } = req.body;
+
+  // Validate required fields
+  if (!title || !company || !job_url || !city || !state || !description || !pay) {
+    return res.status(400).json({
+      success: false,
+      error: 'Required fields: title, company, job_url, city, state, description, pay'
+    });
+  }
+
+  // Validate URL format
+  try {
+    new URL(job_url);
+  } catch {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid job_url format'
+    });
+  }
+
+  const db = getDb();
+
+  try {
+    const result = db.prepare(`
+      INSERT INTO jobs (
+        job_url,
+        title,
+        company,
+        city,
+        state,
+        address,
+        description,
+        general_requirements,
+        pay,
+        benefits,
+        vehicle_requirements,
+        insurance_requirement,
+        schedule_details,
+        source_company,
+        submitted_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+      RETURNING *
+    `).get(
+      job_url,
+      title.trim(),
+      company.trim(),
+      city.trim(),
+      state.trim().toUpperCase(),
+      address?.trim() || null,
+      description.trim(),
+      general_requirements?.trim() || null,
+      pay.trim(),
+      benefits?.trim() || null,
+      vehicle_requirements?.trim() || null,
+      insurance_requirement?.trim() || null,
+      schedule_details?.trim() || null,
+      company.trim()
+    );
+
+    res.json({
+      success: true,
+      message: 'Job posted successfully',
+      data: result
+    });
+  } catch (error) {
+    console.error('Error posting job:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to post job'
     });
   }
 });
