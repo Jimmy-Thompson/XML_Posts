@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -7,31 +7,69 @@
 
     <!-- Posthog Analytics -->
     <script>
-      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      !(function (t, e) {
+        var o, n, p, r;
+        e.__SV ||
+          ((window.posthog = e),
+          (e._i = []),
+          (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split(".");
+              2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                (t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                });
+            }
+            ((p = t.createElement("script")).type = "text/javascript"),
+              (p.async = !0),
+              (p.src = s.api_host + "/static/array.js"),
+              (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(
+                p,
+                r,
+              );
+            var u = e;
+            for (
+              void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                u.people = u.people || [],
+                u.toString = function (t) {
+                  var e = "posthog";
+                  return (
+                    "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e
+                  );
+                },
+                u.people.toString = function () {
+                  return u.toString(1) + ".people (stub)";
+                },
+                o =
+                  "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep".split(
+                    " ",
+                  ),
+                n = 0;
+              n < o.length;
+              n++
+            )
+              g(u, o[n]);
+            e._i.push([i, s, a]);
+          }),
+          (e.__SV = 1));
+      })(document, window.posthog || []);
 
       // Initialize Posthog with your project API key
-      posthog.init('phc_YecmI0SDdgR8klBr7HK8Xu7WvlrPaHxznJRlTZI8wXZ', {
-        api_host: 'https://us.i.posthog.com',
-        person_profiles: 'identified_only', // For privacy - only track identified users
+      posthog.init("phc_YecmI0SDdgR8klBr7HK8Xu7WvlrPaHxznJRlTZI8wXZ", {
+        api_host: "https://us.i.posthog.com",
+        person_profiles: "identified_only", // For privacy - only track identified users
         autocapture: true, // Automatically capture clicks
         session_recording: {
           enabled: true, // Enable session replay
-          recordCrossOriginIframes: false
+          recordCrossOriginIframes: false,
         },
         capture_pageview: true, // Automatically capture page views
-        capture_pageleave: true // Track when users leave
+        capture_pageleave: true, // Track when users leave
       });
     </script>
 
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -959,6 +997,10 @@
         font-weight: 700;
         font-size: 0.95rem;
         white-space: nowrap;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-shrink: 0;
       }
 
       .job-item-description {
@@ -1415,7 +1457,9 @@
             <div class="brand-mark">JB</div>
             GigSafe Job Board
           </div>
-          <button class="subscribe-button" id="subscribeButton">Subscribe</button>
+          <button class="subscribe-button" id="subscribeButton">
+            Subscribe
+          </button>
         </nav>
       </header>
 
@@ -1425,7 +1469,12 @@
             <div class="search-card">
               <div class="search-group">
                 <label class="search-label" for="keyword">Keyword</label>
-                <input class="search-input" id="keyword" name="keyword" placeholder="" />
+                <input
+                  class="search-input"
+                  id="keyword"
+                  name="keyword"
+                  placeholder=""
+                />
               </div>
               <div class="search-group">
                 <label class="search-label" for="city">City</label>
@@ -1503,8 +1552,14 @@
                 </select>
               </div>
               <div class="search-group">
-                <label class="search-label" for="certifications">Certifications</label>
-                <select class="search-select" id="certifications" name="certifications">
+                <label class="search-label" for="certifications"
+                  >Certifications</label
+                >
+                <select
+                  class="search-select"
+                  id="certifications"
+                  name="certifications"
+                >
                   <option value="">Select...</option>
                   <option value="HIPPA">HIPPA</option>
                   <option value="BPP">BPP</option>
@@ -1524,7 +1579,11 @@
             </div>
 
             <!-- Selected Certifications Tags -->
-            <div class="certifications-tags-container" id="certificationsContainer" style="margin-top: 20px; display: none;">
+            <div
+              class="certifications-tags-container"
+              id="certificationsContainer"
+              style="margin-top: 20px; display: none"
+            >
               <div class="certifications-label">Selected Certifications:</div>
               <div class="certifications-tags" id="certificationsTags"></div>
             </div>
@@ -1540,8 +1599,14 @@
             </div>
             <div class="jobs-scroll-area" id="jobsScrollArea">
               <div class="jobs-grid" id="jobsGrid"></div>
-              <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
-              <div class="no-more-jobs" id="noMoreJobs" style="display: none;">No more jobs to load</div>
+              <div
+                class="loading-spinner"
+                id="loadingSpinner"
+                style="display: none"
+              ></div>
+              <div class="no-more-jobs" id="noMoreJobs" style="display: none">
+                No more jobs to load
+              </div>
               <div class="jobs-sentinel" id="jobsSentinel"></div>
             </div>
           </div>
@@ -1554,33 +1619,75 @@
       <div class="modal-container">
         <div class="modal-header">
           <h2 class="modal-title">Subscribe</h2>
-          <button class="modal-close" id="closeModal" aria-label="Close modal">&times;</button>
+          <button class="modal-close" id="closeModal" aria-label="Close modal">
+            &times;
+          </button>
         </div>
         <div class="modal-body">
           <form id="subscribeForm" class="subscribe-form">
             <div class="form-group">
-              <label class="form-label" for="firstName">First Name <span class="required-asterisk">*</span></label>
-              <input type="text" id="firstName" name="firstName" class="form-input" required />
+              <label class="form-label" for="firstName"
+                >First Name <span class="required-asterisk">*</span></label
+              >
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                class="form-input"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="lastName">Last Name <span class="required-asterisk">*</span></label>
-              <input type="text" id="lastName" name="lastName" class="form-input" required />
+              <label class="form-label" for="lastName"
+                >Last Name <span class="required-asterisk">*</span></label
+              >
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                class="form-input"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="email">Email <span class="required-asterisk">*</span></label>
-              <input type="email" id="email" name="email" class="form-input" required />
+              <label class="form-label" for="email"
+                >Email <span class="required-asterisk">*</span></label
+              >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="subscribeCity">City <span class="required-asterisk">*</span></label>
-              <input type="text" id="subscribeCity" name="city" class="form-input" placeholder="Enter your city" required />
+              <label class="form-label" for="subscribeCity"
+                >City <span class="required-asterisk">*</span></label
+              >
+              <input
+                type="text"
+                id="subscribeCity"
+                name="city"
+                class="form-input"
+                placeholder="Enter your city"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="subscribeState">State <span class="required-asterisk">*</span></label>
-              <select id="subscribeState" name="state" class="form-select" required>
+              <label class="form-label" for="subscribeState"
+                >State <span class="required-asterisk">*</span></label
+              >
+              <select
+                id="subscribeState"
+                name="state"
+                class="form-select"
+                required
+              >
                 <option value="">Select State</option>
                 <option>AL</option>
                 <option>AK</option>
@@ -1636,7 +1743,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="modalCertifications">Certifications</label>
+              <label class="form-label" for="modalCertifications"
+                >Certifications</label
+              >
               <div class="cert-upload-wrapper">
                 <select id="modalCertifications" class="form-select">
                   <option value="">Select Certification...</option>
@@ -1651,15 +1760,29 @@
                   <option>FBI</option>
                   <option>PBS</option>
                 </select>
-                <input type="file" id="certFileInput" class="cert-file-input" style="display: none;" />
-                <button type="button" id="addCertButton" class="cert-add-button" disabled>
+                <input
+                  type="file"
+                  id="certFileInput"
+                  class="cert-file-input"
+                  style="display: none"
+                />
+                <button
+                  type="button"
+                  id="addCertButton"
+                  class="cert-add-button"
+                  disabled
+                >
                   Add File
                 </button>
               </div>
             </div>
 
             <!-- Uploaded Certifications Preview -->
-            <div class="form-group" id="uploadedCertsContainer" style="display: none;">
+            <div
+              class="form-group"
+              id="uploadedCertsContainer"
+              style="display: none"
+            >
               <label class="form-label">Uploaded Certifications</label>
               <div class="uploaded-certs-list" id="uploadedCertsList"></div>
             </div>
@@ -1675,9 +1798,9 @@
 
     <script>
       // Jobs infinite scroll functionality
-      console.log('==============================');
-      console.log('Jobs script initializing...');
-      console.log('==============================');
+      console.log("==============================");
+      console.log("Jobs script initializing...");
+      console.log("==============================");
 
       let currentPage = 0;
       let isLoading = false;
@@ -1689,26 +1812,30 @@
       let fuse = null; // Fuse.js instance
       let activeFilters = null; // Persist filters across pagination
 
-      const API_URL = '/api/jobs';
-      console.log('API URL configured:', API_URL);
+      const API_URL = "http://localhost:3000/api/jobs";
+      console.log("API URL configured:", API_URL);
 
-      const jobsGrid = document.getElementById('jobsGrid');
-      const jobsScrollArea = document.getElementById('jobsScrollArea');
-      const jobsSentinel = document.getElementById('jobsSentinel');
-      const loadingSpinner = document.getElementById('loadingSpinner');
-      const noMoreJobs = document.getElementById('noMoreJobs');
-      const jobsCount = document.getElementById('jobsCount');
-      const keywordInput = document.getElementById('keyword');
-      const citySelect = document.getElementById('city');
-      const stateSelect = document.getElementById('state');
-      const vehicleSelect = document.getElementById('vehicle');
-      const certificationsSelect = document.getElementById('certifications');
-      const certificationsContainer = document.getElementById('certificationsContainer');
-      const certificationsTags = document.getElementById('certificationsTags');
-      const searchButton = document.querySelector('.search-button');
-      const searchButtonDefaultText = searchButton ? searchButton.textContent : 'Search Jobs';
+      const jobsGrid = document.getElementById("jobsGrid");
+      const jobsScrollArea = document.getElementById("jobsScrollArea");
+      const jobsSentinel = document.getElementById("jobsSentinel");
+      const loadingSpinner = document.getElementById("loadingSpinner");
+      const noMoreJobs = document.getElementById("noMoreJobs");
+      const jobsCount = document.getElementById("jobsCount");
+      const keywordInput = document.getElementById("keyword");
+      const citySelect = document.getElementById("city");
+      const stateSelect = document.getElementById("state");
+      const vehicleSelect = document.getElementById("vehicle");
+      const certificationsSelect = document.getElementById("certifications");
+      const certificationsContainer = document.getElementById(
+        "certificationsContainer",
+      );
+      const certificationsTags = document.getElementById("certificationsTags");
+      const searchButton = document.querySelector(".search-button");
+      const searchButtonDefaultText = searchButton
+        ? searchButton.textContent
+        : "Search Jobs";
 
-      console.log('DOM elements found:', {
+      console.log("DOM elements found:", {
         jobsGrid: !!jobsGrid,
         jobsScrollArea: !!jobsScrollArea,
         jobsSentinel: !!jobsSentinel,
@@ -1719,7 +1846,7 @@
         stateSelect: !!stateSelect,
         certificationsSelect: !!certificationsSelect,
         certificationsContainer: !!certificationsContainer,
-        certificationsTags: !!certificationsTags
+        certificationsTags: !!certificationsTags,
       });
 
       // Cities data
@@ -1728,16 +1855,16 @@
       // Certifications data
       const selectedCertifications = [];
       const pastelColors = [
-        '#FFE5E5', // light pink
-        '#E5F3FF', // light blue
-        '#E5FFE5', // light green
-        '#FFE5FF', // light purple
-        '#FFF5E5', // light orange
-        '#FFFFE5', // light yellow
-        '#E5FFFF', // light cyan
-        '#F5E5FF', // light lavender
-        '#FFE5EC', // light peach
-        '#E5FFF5'  // light mint
+        "#FFE5E5", // light pink
+        "#E5F3FF", // light blue
+        "#E5FFE5", // light green
+        "#FFE5FF", // light purple
+        "#FFF5E5", // light orange
+        "#FFFFE5", // light yellow
+        "#E5FFFF", // light cyan
+        "#F5E5FF", // light lavender
+        "#FFE5EC", // light peach
+        "#E5FFF5", // light mint
       ];
       let colorIndex = 0;
 
@@ -1748,7 +1875,7 @@
 
         if (isSearching) {
           searchButton.disabled = true;
-          searchButton.textContent = 'Searching...';
+          searchButton.textContent = "Searching...";
         } else {
           searchButton.disabled = false;
           searchButton.textContent = searchButtonDefaultText;
@@ -1757,13 +1884,13 @@
 
       function normalizeFilters(raw = {}) {
         return {
-          keyword: raw.keyword?.trim() || '',
-          state: raw.state || '',
-          city: raw.city || '',
-          vehicle: raw.vehicle || '',
+          keyword: raw.keyword?.trim() || "",
+          state: raw.state || "",
+          city: raw.city || "",
+          vehicle: raw.vehicle || "",
           certifications: Array.isArray(raw.certifications)
             ? raw.certifications.filter(Boolean)
-            : []
+            : [],
         };
       }
 
@@ -1773,7 +1900,7 @@
           state: stateSelect?.value,
           city: citySelect?.value,
           vehicle: vehicleSelect?.value,
-          certifications: [...selectedCertifications]
+          certifications: [...selectedCertifications],
         });
       }
 
@@ -1788,15 +1915,19 @@
       // Load cities data from JSON
       async function loadCitiesData() {
         try {
-          console.log('Loading cities data...');
-          const response = await fetch('cities_by_state.json');
+          console.log("Loading cities data...");
+          const response = await fetch("cities_by_state.json");
           citiesData = await response.json();
-          console.log('Cities data loaded:', Object.keys(citiesData).length - 1, 'states');
+          console.log(
+            "Cities data loaded:",
+            Object.keys(citiesData).length - 1,
+            "states",
+          );
 
           // Initialize city dropdown with all cities
-          populateCities('');
+          populateCities("");
         } catch (error) {
-          console.error('Failed to load cities data:', error);
+          console.error("Failed to load cities data:", error);
         }
       }
 
@@ -1804,21 +1935,22 @@
       function populateCities(selectedState) {
         if (!citiesData || !citySelect) return;
 
-        console.log('Populating cities for state:', selectedState || 'All');
+        console.log("Populating cities for state:", selectedState || "All");
 
         // Clear existing options except "Any"
         citySelect.innerHTML = '<option value="">Any</option>';
 
         // Get cities for the selected state or all cities
-        const cities = selectedState && selectedState !== ''
-          ? (citiesData[selectedState] || [])
-          : (citiesData.allCities || []);
+        const cities =
+          selectedState && selectedState !== ""
+            ? citiesData[selectedState] || []
+            : citiesData.allCities || [];
 
         console.log(`  Found ${cities.length} cities`);
 
         // Add city options
-        cities.forEach(city => {
-          const option = document.createElement('option');
+        cities.forEach((city) => {
+          const option = document.createElement("option");
           option.value = city;
           option.textContent = city;
           citySelect.appendChild(option);
@@ -1827,13 +1959,13 @@
 
       // Handle state selection change
       if (stateSelect) {
-        stateSelect.addEventListener('change', (e) => {
+        stateSelect.addEventListener("change", (e) => {
           const selectedState = e.target.value;
-          console.log('State changed to:', selectedState || 'Any');
+          console.log("State changed to:", selectedState || "Any");
 
           // Reset city to "Any"
           if (citySelect) {
-            citySelect.value = '';
+            citySelect.value = "";
           }
 
           // Repopulate cities
@@ -1846,8 +1978,8 @@
 
       // Handle city selection change
       if (citySelect) {
-        citySelect.addEventListener('change', () => {
-          console.log('City changed to:', citySelect.value || 'Any');
+        citySelect.addEventListener("change", () => {
+          console.log("City changed to:", citySelect.value || "Any");
           // Trigger search with new city filter
           triggerSearch();
         });
@@ -1855,8 +1987,8 @@
 
       // Handle vehicle selection change
       if (vehicleSelect) {
-        vehicleSelect.addEventListener('change', () => {
-          console.log('Vehicle changed to:', vehicleSelect.value || 'Any');
+        vehicleSelect.addEventListener("change", () => {
+          console.log("Vehicle changed to:", vehicleSelect.value || "Any");
           // Trigger search with new vehicle filter
           triggerSearch();
         });
@@ -1868,21 +2000,21 @@
           return;
         }
 
-        console.log('Adding certification:', cert);
+        console.log("Adding certification:", cert);
 
         // Add to selected array
         selectedCertifications.push(cert);
 
         // Create tag element
-        const tag = document.createElement('div');
-        tag.className = 'cert-tag';
+        const tag = document.createElement("div");
+        tag.className = "cert-tag";
         tag.dataset.cert = cert;
 
         // Get pastel color
         const color = pastelColors[colorIndex % pastelColors.length];
         colorIndex++;
         tag.style.backgroundColor = color;
-        tag.style.color = '#333';
+        tag.style.color = "#333";
 
         // Tag content
         tag.innerHTML = `
@@ -1891,7 +2023,7 @@
         `;
 
         // Add click handler for remove button
-        tag.querySelector('.cert-tag-remove').addEventListener('click', (e) => {
+        tag.querySelector(".cert-tag-remove").addEventListener("click", (e) => {
           e.stopPropagation();
           removeCertification(cert);
         });
@@ -1901,22 +2033,24 @@
 
         // Show container if hidden
         if (certificationsContainer) {
-          certificationsContainer.style.display = 'block';
+          certificationsContainer.style.display = "block";
         }
 
         // Disable this option in dropdown
-        const option = certificationsSelect.querySelector(`option[value="${cert}"]`);
+        const option = certificationsSelect.querySelector(
+          `option[value="${cert}"]`,
+        );
         if (option) {
           option.disabled = true;
-          option.style.display = 'none';
+          option.style.display = "none";
         }
 
         // Reset dropdown
-        certificationsSelect.value = '';
+        certificationsSelect.value = "";
       }
 
       function removeCertification(cert) {
-        console.log('Removing certification:', cert);
+        console.log("Removing certification:", cert);
 
         // Remove from selected array
         const index = selectedCertifications.indexOf(cert);
@@ -1931,21 +2065,23 @@
         }
 
         // Re-enable option in dropdown
-        const option = certificationsSelect.querySelector(`option[value="${cert}"]`);
+        const option = certificationsSelect.querySelector(
+          `option[value="${cert}"]`,
+        );
         if (option) {
           option.disabled = false;
-          option.style.display = '';
+          option.style.display = "";
         }
 
         // Hide container if no certifications
         if (selectedCertifications.length === 0 && certificationsContainer) {
-          certificationsContainer.style.display = 'none';
+          certificationsContainer.style.display = "none";
         }
       }
 
       // Handle certification selection
       if (certificationsSelect) {
-        certificationsSelect.addEventListener('change', (e) => {
+        certificationsSelect.addEventListener("change", (e) => {
           const cert = e.target.value;
           if (cert) {
             addCertification(cert);
@@ -1955,22 +2091,23 @@
 
       async function fetchJobs(page = 1, filtersOverride = null) {
         console.log(`fetchJobs called with page: ${page}`);
-        console.log('isLoading:', isLoading);
-        console.log('hasMoreJobs:', hasMoreJobs);
+        console.log("isLoading:", isLoading);
+        console.log("hasMoreJobs:", hasMoreJobs);
 
         const isNewSearch = page === 1;
-        const filtersSource = filtersOverride ?? activeFilters ?? getCurrentFilters();
+        const filtersSource =
+          filtersOverride ?? activeFilters ?? getCurrentFilters();
         const filters = normalizeFilters(filtersSource);
 
         if (!activeFilters || isNewSearch || filtersOverride) {
           activeFilters = {
             ...filters,
-            certifications: [...filters.certifications]
+            certifications: [...filters.certifications],
           };
         }
 
         if (isLoading || (!hasMoreJobs && !isNewSearch)) {
-          console.log('Fetch aborted - already loading or no more jobs');
+          console.log("Fetch aborted - already loading or no more jobs");
           return;
         }
 
@@ -1978,61 +2115,64 @@
           setSearchLoading(true);
           currentPage = 0;
           loadedJobs = 0;
-          jobsGrid.innerHTML = '';
+          jobsGrid.innerHTML = "";
           hasMoreJobs = true;
           allLoadedJobs = []; // Reset loaded jobs array
         }
 
-        jobsGrid.querySelectorAll('.jobs-error, .jobs-empty').forEach(node => node.remove());
+        jobsGrid
+          .querySelectorAll(".jobs-error, .jobs-empty")
+          .forEach((node) => node.remove());
 
         isLoading = true;
-        loadingSpinner.style.display = 'block';
-        noMoreJobs.style.display = 'none';
+        loadingSpinner.style.display = "block";
+        noMoreJobs.style.display = "none";
 
         // Build query parameters with filters
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: '20'
+          limit: "20",
         });
 
         // Add filters
-        if (filters.keyword) params.append('keyword', filters.keyword);
-        if (filters.state) params.append('state', filters.state);
-        if (filters.city) params.append('city', filters.city);
-        if (filters.vehicle && filters.vehicle !== 'Any') params.append('vehicle', filters.vehicle);
+        if (filters.keyword) params.append("keyword", filters.keyword);
+        if (filters.state) params.append("state", filters.state);
+        if (filters.city) params.append("city", filters.city);
+        if (filters.vehicle && filters.vehicle !== "Any")
+          params.append("vehicle", filters.vehicle);
         if (filters.certifications.length > 0) {
-          params.append('certifications', filters.certifications.join(','));
+          params.append("certifications", filters.certifications.join(","));
         }
 
         const fetchURL = `${API_URL}?${params.toString()}`;
-        console.log('Fetching:', fetchURL);
-        console.log('Filters:', filters);
+        console.log("Fetching:", fetchURL);
+        console.log("Filters:", filters);
 
         try {
           const response = await fetch(fetchURL);
-          console.log('Response status:', response.status);
-          console.log('Response OK:', response.ok);
+          console.log("Response status:", response.status);
+          console.log("Response OK:", response.ok);
 
           if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
           }
 
           const data = await response.json();
-          console.log('Data received:', {
+          console.log("Data received:", {
             success: data.success,
             jobsCount: data.data?.length,
             totalJobs: data.pagination?.totalJobs,
-            hasMore: data.pagination?.hasMore
+            hasMore: data.pagination?.hasMore,
           });
 
           if (!data.success) {
-            throw new Error(data.error || 'Unknown API error');
+            throw new Error(data.error || "Unknown API error");
           }
 
           totalJobs = data.pagination.totalJobs;
           hasMoreJobs = data.pagination.hasMore;
 
-          console.log('Rendering', data.data.length, 'jobs');
+          console.log("Rendering", data.data.length, "jobs");
 
           // Add jobs to our loaded jobs array for fuzzy search
           allLoadedJobs = allLoadedJobs.concat(data.data);
@@ -2044,25 +2184,26 @@
           updateJobsCount();
           currentPage = page;
 
-          console.log('Page loaded successfully');
+          console.log("Page loaded successfully");
           console.log(`  Total jobs: ${totalJobs}`);
           console.log(`  Loaded so far: ${loadedJobs}`);
           console.log(`  Has more: ${hasMoreJobs}`);
 
           if (!hasMoreJobs) {
             if (loadedJobs > 0) {
-              noMoreJobs.style.display = 'block';
+              noMoreJobs.style.display = "block";
             }
           }
         } catch (error) {
-          console.error('Error fetching jobs:');
-          console.error('Error type:', error.name);
-          console.error('Error message:', error.message);
-          console.error('Full error:', error);
+          console.error("Error fetching jobs:");
+          console.error("Error type:", error.name);
+          console.error("Error message:", error.message);
+          console.error("Full error:", error);
 
-          let errorMessage = 'Failed to load jobs. ';
-          if (error.message.includes('Failed to fetch')) {
-            errorMessage += 'Cannot connect to API server. Make sure you ran "npm start" to start both servers.';
+          let errorMessage = "Failed to load jobs. ";
+          if (error.message.includes("Failed to fetch")) {
+            errorMessage +=
+              'Cannot connect to API server. Make sure you ran "npm start" to start both servers.';
           } else {
             errorMessage += error.message;
           }
@@ -2070,7 +2211,7 @@
           showJobsError(errorMessage);
         } finally {
           isLoading = false;
-          loadingSpinner.style.display = 'none';
+          loadingSpinner.style.display = "none";
           if (isNewSearch) {
             setSearchLoading(false);
           }
@@ -2078,7 +2219,7 @@
       }
       function updateJobsCount() {
         if (totalJobs === 0) {
-          jobsCount.textContent = 'No jobs available yet';
+          jobsCount.textContent = "No jobs available yet";
           return;
         }
 
@@ -2088,15 +2229,16 @@
 
       function renderJobs(jobs) {
         if (!jobs.length && loadedJobs === 0) {
-          jobsGrid.innerHTML = '<div class="jobs-empty">No jobs available yet</div>';
+          jobsGrid.innerHTML =
+            '<div class="jobs-empty">No jobs available yet</div>';
           return;
         }
 
-        if (jobsGrid.firstElementChild?.classList.contains('jobs-empty')) {
-          jobsGrid.innerHTML = '';
+        if (jobsGrid.firstElementChild?.classList.contains("jobs-empty")) {
+          jobsGrid.innerHTML = "";
         }
 
-        jobs.forEach(job => {
+        jobs.forEach((job) => {
           const jobCard = createJobCard(job);
           jobsGrid.appendChild(jobCard);
           loadedJobs += 1;
@@ -2104,56 +2246,57 @@
       }
 
       function showJobsError(message) {
-        const existingError = jobsGrid.querySelector('.jobs-error');
+        const existingError = jobsGrid.querySelector(".jobs-error");
         if (existingError) {
           existingError.textContent = message;
           return;
         }
 
-        const error = document.createElement('div');
-        error.className = 'jobs-error';
+        const error = document.createElement("div");
+        error.className = "jobs-error";
         error.textContent = message;
         jobsGrid.appendChild(error);
       }
 
       // Create job card element
       function createJobCard(job) {
-        const card = document.createElement('div');
-        card.className = 'job-item';
+        const card = document.createElement("div");
+        card.className = "job-item";
         card.onclick = () => {
           // Track job click with Posthog
-          if (typeof posthog !== 'undefined') {
-            posthog.capture('job_click', {
+          if (typeof posthog !== "undefined") {
+            posthog.capture("job_click", {
               job_id: job.id,
               job_title: job.title,
               company: job.company,
               location: `${job.city}, ${job.state}`,
               pay: job.pay,
               source_company: job.source_company,
-              vehicle_requirements: job.vehicle_requirements
+              vehicle_requirements: job.vehicle_requirements,
             });
           }
 
           // Open job URL
-          window.open(job.job_url, '_blank');
+          window.open(job.job_url, "_blank");
         };
 
-        const location = [job.city, job.state].filter(Boolean).join(', ') || 'Location not specified';
-        const description = job.description || 'No description available';
+        const location =
+          [job.city, job.state].filter(Boolean).join(", ") ||
+          "Location not specified";
+        const description = job.description || "No description available";
 
         card.innerHTML = `
           <div class="job-item-header">
             <div>
-              <h3 class="job-item-title">${escapeHtml(job.title || 'Job Title Not Available')}</h3>
-              <div class="job-item-company">${escapeHtml(job.company || 'Company Not Specified')}</div>
+              <h3 class="job-item-title">${escapeHtml(job.title || "Job Title Not Available")}</h3>
+              <div class="job-item-company">${escapeHtml(job.company || "Company Not Specified")}</div>
               <div class="job-item-location">${escapeHtml(location)}</div>
             </div>
-            ${job.pay ? `<div class="job-item-pay">${escapeHtml(job.pay)}</div>` : ''}
+            ${job.pay ? `<div class="job-item-pay">${escapeHtml(job.pay)}</div>` : ""}
           </div>
           <div class="job-item-description">${escapeHtml(description)}</div>
           <div class="job-item-tags">
-            ${job.source_company ? `<span class="job-tag">${escapeHtml(job.source_company)}</span>` : ''}
-            ${job.vehicle_requirements ? `<span class="job-tag">${escapeHtml(job.vehicle_requirements)}</span>` : ''}
+            ${job.vehicle_requirements ? `<span class="job-tag">${escapeHtml(job.vehicle_requirements)}</span>` : ""}
           </div>
         `;
 
@@ -2162,7 +2305,7 @@
 
       // Escape HTML to prevent XSS
       function escapeHtml(text) {
-        const div = document.createElement('div');
+        const div = document.createElement("div");
         div.textContent = text;
         return div.innerHTML;
       }
@@ -2175,10 +2318,10 @@
         observer?.disconnect();
 
         const observerOptions = jobsScrollArea
-          ? { root: jobsScrollArea, rootMargin: '0px 0px 200px 0px' }
-          : { root: null, rootMargin: '0px 0px 200px 0px' };
+          ? { root: jobsScrollArea, rootMargin: "0px 0px 200px 0px" }
+          : { root: null, rootMargin: "0px 0px 200px 0px" };
 
-        observer = new IntersectionObserver(entries => {
+        observer = new IntersectionObserver((entries) => {
           const [entry] = entries;
 
           if (entry?.isIntersecting && !isLoading && hasMoreJobs) {
@@ -2192,28 +2335,28 @@
 
       // Update Fuse.js index with loaded jobs
       function updateFuseIndex() {
-        if (typeof Fuse === 'undefined') {
-          console.log('Fuse.js not loaded yet');
+        if (typeof Fuse === "undefined") {
+          console.log("Fuse.js not loaded yet");
           return;
         }
 
         const fuseOptions = {
           keys: [
-            { name: 'title', weight: 0.3 },
-            { name: 'description', weight: 0.25 },
-            { name: 'schedule_details', weight: 0.2 },
-            { name: 'company', weight: 0.15 },
-            { name: 'benefits', weight: 0.05 },
-            { name: 'general_requirements', weight: 0.05 }
+            { name: "title", weight: 0.3 },
+            { name: "description", weight: 0.25 },
+            { name: "schedule_details", weight: 0.2 },
+            { name: "company", weight: 0.15 },
+            { name: "benefits", weight: 0.05 },
+            { name: "general_requirements", weight: 0.05 },
           ],
           threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
           includeScore: true,
           minMatchCharLength: 2,
-          ignoreLocation: true
+          ignoreLocation: true,
         };
 
         fuse = new Fuse(allLoadedJobs, fuseOptions);
-        console.log('Fuse.js index updated with', allLoadedJobs.length, 'jobs');
+        console.log("Fuse.js index updated with", allLoadedJobs.length, "jobs");
       }
 
       // Apply fuzzy search filter on loaded jobs
@@ -2224,15 +2367,15 @@
           return;
         }
 
-        console.log('Applying fuzzy search for:', keyword);
+        console.log("Applying fuzzy search for:", keyword);
         const results = fuse.search(keyword);
-        console.log('Found', results.length, 'fuzzy matches');
+        console.log("Found", results.length, "fuzzy matches");
 
         // Extract job objects from Fuse results
-        const matchedJobs = results.map(result => result.item);
+        const matchedJobs = results.map((result) => result.item);
 
         // Clear and render matched jobs
-        jobsGrid.innerHTML = '';
+        jobsGrid.innerHTML = "";
         loadedJobs = 0;
         renderJobs(matchedJobs);
 
@@ -2242,68 +2385,73 @@
 
       // Trigger search
       function triggerSearch() {
-        console.log('Search triggered!');
+        console.log("Search triggered!");
 
         const filters = getCurrentFilters();
         const useFuzzy = shouldUseFuzzySearch(filters);
 
         if (useFuzzy) {
-          console.log('Using client-side fuzzy search on', allLoadedJobs.length, 'loaded jobs');
+          console.log(
+            "Using client-side fuzzy search on",
+            allLoadedJobs.length,
+            "loaded jobs",
+          );
           setSearchLoading(true);
           activeFilters = {
             ...filters,
-            certifications: [...filters.certifications]
+            certifications: [...filters.certifications],
           };
           applyFuzzySearch(filters.keyword);
           setSearchLoading(false);
           return;
         }
 
-        console.log('Fetching from server with filters');
+        console.log("Fetching from server with filters");
         fetchJobs(1, filters);
       }
       // Initialize
-      document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOMContentLoaded event fired!');
-        console.log('Initializing jobs system...');
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOMContentLoaded event fired!");
+        console.log("Initializing jobs system...");
 
         // Load cities data first
         loadCitiesData();
 
         // Setup search button
         if (searchButton) {
-          searchButton.addEventListener('click', triggerSearch);
-          console.log('Search button event listener attached');
+          searchButton.addEventListener("click", triggerSearch);
+          console.log("Search button event listener attached");
         }
 
         // Setup Enter key on keyword input
         if (keywordInput) {
-          keywordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+          keywordInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
               triggerSearch();
             }
           });
-          console.log('Keyword input Enter key listener attached');
+          console.log("Keyword input Enter key listener attached");
         }
 
         // Setup subscribe modal
-        const subscribeButton = document.getElementById('subscribeButton');
-        const subscribeModal = document.getElementById('subscribeModal');
-        const closeModalButton = document.getElementById('closeModal');
+        const subscribeButton = document.getElementById("subscribeButton");
+        const subscribeModal = document.getElementById("subscribeModal");
+        const closeModalButton = document.getElementById("closeModal");
 
         // Function to update subscribe button state
         function updateSubscribeButton() {
           if (!subscribeButton) return;
 
-          const hasSubscribed = sessionStorage.getItem('hasSubscribed') === 'true';
+          const hasSubscribed =
+            sessionStorage.getItem("hasSubscribed") === "true";
 
           if (hasSubscribed) {
-            subscribeButton.textContent = 'Subscribed';
-            subscribeButton.classList.add('subscribed');
+            subscribeButton.textContent = "Subscribed";
+            subscribeButton.classList.add("subscribed");
             subscribeButton.disabled = true;
           } else {
-            subscribeButton.textContent = 'Subscribe';
-            subscribeButton.classList.remove('subscribed');
+            subscribeButton.textContent = "Subscribe";
+            subscribeButton.classList.remove("subscribed");
             subscribeButton.disabled = false;
           }
         }
@@ -2313,46 +2461,51 @@
 
         if (subscribeButton && subscribeModal) {
           // Open modal when subscribe button is clicked
-          subscribeButton.addEventListener('click', () => {
+          subscribeButton.addEventListener("click", () => {
             if (subscribeButton.disabled) return; // Don't open if subscribed
-            subscribeModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            subscribeModal.classList.add("active");
+            document.body.style.overflow = "hidden"; // Prevent background scrolling
           });
 
           // Close modal when close button is clicked
           if (closeModalButton) {
-            closeModalButton.addEventListener('click', () => {
-              subscribeModal.classList.remove('active');
-              document.body.style.overflow = ''; // Restore scrolling
+            closeModalButton.addEventListener("click", () => {
+              subscribeModal.classList.remove("active");
+              document.body.style.overflow = ""; // Restore scrolling
             });
           }
 
           // Close modal when clicking outside the modal container
-          subscribeModal.addEventListener('click', (e) => {
+          subscribeModal.addEventListener("click", (e) => {
             if (e.target === subscribeModal) {
-              subscribeModal.classList.remove('active');
-              document.body.style.overflow = ''; // Restore scrolling
+              subscribeModal.classList.remove("active");
+              document.body.style.overflow = ""; // Restore scrolling
             }
           });
 
           // Close modal on Escape key
-          document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && subscribeModal.classList.contains('active')) {
-              subscribeModal.classList.remove('active');
-              document.body.style.overflow = ''; // Restore scrolling
+          document.addEventListener("keydown", (e) => {
+            if (
+              e.key === "Escape" &&
+              subscribeModal.classList.contains("active")
+            ) {
+              subscribeModal.classList.remove("active");
+              document.body.style.overflow = ""; // Restore scrolling
             }
           });
 
-          console.log('Subscribe modal event listeners attached');
+          console.log("Subscribe modal event listeners attached");
         }
 
         // Setup certification upload in modal
-        const modalCertSelect = document.getElementById('modalCertifications');
-        const certFileInput = document.getElementById('certFileInput');
-        const addCertButton = document.getElementById('addCertButton');
-        const uploadedCertsContainer = document.getElementById('uploadedCertsContainer');
-        const uploadedCertsList = document.getElementById('uploadedCertsList');
-        const subscribeForm = document.getElementById('subscribeForm');
+        const modalCertSelect = document.getElementById("modalCertifications");
+        const certFileInput = document.getElementById("certFileInput");
+        const addCertButton = document.getElementById("addCertButton");
+        const uploadedCertsContainer = document.getElementById(
+          "uploadedCertsContainer",
+        );
+        const uploadedCertsList = document.getElementById("uploadedCertsList");
+        const subscribeForm = document.getElementById("subscribeForm");
 
         let uploadedCertifications = []; // Array of {cert: string, file: File, thumbnail: string}
 
@@ -2364,7 +2517,7 @@
               resolve(e.target.result);
             };
             reader.onerror = () => {
-              reject(new Error('Failed to read file'));
+              reject(new Error("Failed to read file"));
             };
             reader.readAsDataURL(file);
           });
@@ -2372,31 +2525,36 @@
 
         // Format file size in human-readable format
         function formatFileSize(bytes) {
-          if (bytes === 0) return '0 Bytes';
+          if (bytes === 0) return "0 Bytes";
           const k = 1024;
-          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const sizes = ["Bytes", "KB", "MB", "GB"];
           const i = Math.floor(Math.log(bytes) / Math.log(k));
-          return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+          return (
+            Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i]
+          );
         }
 
         // Get file icon based on file type
         function getFileIcon(fileType) {
-          if (fileType.startsWith('image/')) return 'IMG';
-          if (fileType === 'application/pdf') return 'PDF';
-          if (fileType.includes('word') || fileType.includes('document')) return 'DOC';
-          if (fileType.includes('spreadsheet') || fileType.includes('excel')) return 'XLS';
-          if (fileType.includes('zip') || fileType.includes('compressed')) return 'ZIP';
-          return 'FILE';
+          if (fileType.startsWith("image/")) return "IMG";
+          if (fileType === "application/pdf") return "PDF";
+          if (fileType.includes("word") || fileType.includes("document"))
+            return "DOC";
+          if (fileType.includes("spreadsheet") || fileType.includes("excel"))
+            return "XLS";
+          if (fileType.includes("zip") || fileType.includes("compressed"))
+            return "ZIP";
+          return "FILE";
         }
 
         if (modalCertSelect && certFileInput && addCertButton) {
           // Enable "Add File" button when certification is selected
-          modalCertSelect.addEventListener('change', () => {
+          modalCertSelect.addEventListener("change", () => {
             addCertButton.disabled = !modalCertSelect.value;
           });
 
           // Trigger file input when "Add File" button is clicked
-          addCertButton.addEventListener('click', () => {
+          addCertButton.addEventListener("click", () => {
             const selectedCert = modalCertSelect.value;
             if (selectedCert) {
               certFileInput.dataset.selectedCert = selectedCert;
@@ -2405,14 +2563,14 @@
           });
 
           // Handle file selection
-          certFileInput.addEventListener('change', async (e) => {
+          certFileInput.addEventListener("change", async (e) => {
             const file = e.target.files[0];
             const selectedCert = certFileInput.dataset.selectedCert;
 
             if (file && selectedCert) {
               // Generate thumbnail if it's an image
               let thumbnailDataUrl = null;
-              if (file.type.startsWith('image/')) {
+              if (file.type.startsWith("image/")) {
                 thumbnailDataUrl = await generateImageThumbnail(file);
               }
 
@@ -2420,37 +2578,37 @@
               uploadedCertifications.push({
                 cert: selectedCert,
                 file: file,
-                thumbnail: thumbnailDataUrl
+                thumbnail: thumbnailDataUrl,
               });
 
               // Create tag
               renderUploadedCertifications();
 
               // Reset dropdown and file input
-              modalCertSelect.value = '';
-              certFileInput.value = '';
+              modalCertSelect.value = "";
+              certFileInput.value = "";
               delete certFileInput.dataset.selectedCert;
               addCertButton.disabled = true;
 
               // Show uploaded certifications container
               if (uploadedCertsContainer) {
-                uploadedCertsContainer.style.display = 'block';
+                uploadedCertsContainer.style.display = "block";
               }
             }
           });
 
-          console.log('Certification upload event listeners attached');
+          console.log("Certification upload event listeners attached");
         }
 
         // Render uploaded certifications as preview cards
         function renderUploadedCertifications() {
           if (!uploadedCertsList) return;
 
-          uploadedCertsList.innerHTML = '';
+          uploadedCertsList.innerHTML = "";
 
           uploadedCertifications.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'uploaded-cert-card';
+            const card = document.createElement("div");
+            card.className = "uploaded-cert-card";
 
             // Create thumbnail or icon
             let thumbnailHTML;
@@ -2480,16 +2638,18 @@
             `;
 
             // Add remove handler
-            card.querySelector('.cert-card-remove').addEventListener('click', () => {
-              removeUploadedCertification(index);
-            });
+            card
+              .querySelector(".cert-card-remove")
+              .addEventListener("click", () => {
+                removeUploadedCertification(index);
+              });
 
             uploadedCertsList.appendChild(card);
           });
 
           // Hide container if no certifications
           if (uploadedCertifications.length === 0 && uploadedCertsContainer) {
-            uploadedCertsContainer.style.display = 'none';
+            uploadedCertsContainer.style.display = "none";
           }
         }
 
@@ -2499,55 +2659,70 @@
           renderUploadedCertifications();
         }
 
-                        // Handle form submission
+        // Handle form submission
         if (subscribeForm) {
-          const submitButton = subscribeForm.querySelector('.form-submit-button');
+          const submitButton = subscribeForm.querySelector(
+            ".form-submit-button",
+          );
 
-          subscribeForm.addEventListener('submit', async (e) => {
+          subscribeForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const firstName = (document.getElementById('firstName')?.value || '').trim();
-            const lastName = (document.getElementById('lastName')?.value || '').trim();
-            const email = (document.getElementById('email')?.value || '').trim();
-            const city = (document.getElementById('subscribeCity')?.value || '').trim();
-            const state = (document.getElementById('subscribeState')?.value || '').trim();
+            const firstName = (
+              document.getElementById("firstName")?.value || ""
+            ).trim();
+            const lastName = (
+              document.getElementById("lastName")?.value || ""
+            ).trim();
+            const email = (
+              document.getElementById("email")?.value || ""
+            ).trim();
+            const city = (
+              document.getElementById("subscribeCity")?.value || ""
+            ).trim();
+            const state = (
+              document.getElementById("subscribeState")?.value || ""
+            ).trim();
 
-            if (!email || !email.includes('@')) {
-              alert('Please enter a valid email address.');
+            if (!email || !email.includes("@")) {
+              alert("Please enter a valid email address.");
               return;
             }
 
             if (submitButton) {
               submitButton.disabled = true;
-              submitButton.textContent = 'Submitting...';
+              submitButton.textContent = "Submitting...";
             }
 
             try {
               // Create FormData to handle file uploads
               const formData = new FormData();
-              formData.append('firstName', firstName);
-              formData.append('lastName', lastName);
-              formData.append('email', email);
-              formData.append('city', city);
-              formData.append('state', state);
-              formData.append('sourceTag', 'landing-modal');
+              formData.append("firstName", firstName);
+              formData.append("lastName", lastName);
+              formData.append("email", email);
+              formData.append("city", city);
+              formData.append("state", state);
+              formData.append("sourceTag", "landing-modal");
 
               // Append certification files
               uploadedCertifications.forEach((item, index) => {
-                formData.append('certifications', item.file);
+                formData.append("certifications", item.file);
                 formData.append(`cert_type_${index}`, item.cert);
               });
 
-              const response = await fetch('/api/subscribe', {
-                method: 'POST',
-                // DON'T set Content-Type header - browser will set it automatically with boundary
-                body: formData
-              });
+              const response = await fetch(
+                "http://localhost:3000/api/subscribe",
+                {
+                  method: "POST",
+                  // DON'T set Content-Type header - browser will set it automatically with boundary
+                  body: formData,
+                },
+              );
 
               const result = await response.json();
 
               if (!response.ok || !result.success) {
-                throw new Error(result.error || 'Failed to subscribe');
+                throw new Error(result.error || "Failed to subscribe");
               }
 
               subscribeForm.reset();
@@ -2555,60 +2730,45 @@
               renderUploadedCertifications();
 
               const filesUploaded = result.filesUploaded || 0;
-              const message = filesUploaded > 0
-                ? `Thanks for subscribing! ${filesUploaded} certification(s) uploaded successfully.`
-                : 'Thanks for subscribing! We will send updates soon.';
+              const message =
+                filesUploaded > 0
+                  ? `Thanks for subscribing! ${filesUploaded} certification(s) uploaded successfully.`
+                  : "Thanks for subscribing! We will send updates soon.";
 
               alert(message);
 
               // Mark as subscribed in this session
-              sessionStorage.setItem('hasSubscribed', 'true');
+              sessionStorage.setItem("hasSubscribed", "true");
               updateSubscribeButton();
 
               if (subscribeModal) {
-                subscribeModal.classList.remove('active');
-                document.body.style.overflow = '';
+                subscribeModal.classList.remove("active");
+                document.body.style.overflow = "";
               }
             } catch (error) {
-              console.error('Failed to submit subscription:', error);
-              alert(error.message || 'Unable to submit your subscription. Please try again.');
+              console.error("Failed to submit subscription:", error);
+              alert(
+                error.message ||
+                  "Unable to submit your subscription. Please try again.",
+              );
             } finally {
               if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Subscribe';
+                submitButton.textContent = "Subscribe";
               }
             }
           });
 
-          console.log('Subscribe form event listener attached');
+          console.log("Subscribe form event listener attached");
         }
 
         // Load jobs
         fetchJobs(1);
         setupIntersectionObserver();
 
-        console.log('Initialization complete');
-        console.log('n');
+        console.log("Initialization complete");
+        console.log("n");
       });
     </script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
