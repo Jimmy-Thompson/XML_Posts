@@ -2493,15 +2493,20 @@
         function updateSubscribeButton() {
           if (!subscribeButton) return;
 
+          const subscribeTextSpan = subscribeButton.querySelector(".subscribe-text");
           const hasSubscribed =
             sessionStorage.getItem("hasSubscribed") === "true";
 
           if (hasSubscribed) {
-            subscribeButton.textContent = "Subscribed";
+            if (subscribeTextSpan) {
+              subscribeTextSpan.textContent = "Subscribed";
+            }
             subscribeButton.classList.add("subscribed");
             subscribeButton.disabled = true;
           } else {
-            subscribeButton.textContent = "Subscribe";
+            if (subscribeTextSpan) {
+              subscribeTextSpan.textContent = "Subscribe";
+            }
             subscribeButton.classList.remove("subscribed");
             subscribeButton.disabled = false;
           }
