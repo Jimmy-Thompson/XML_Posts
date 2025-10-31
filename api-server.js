@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -44,6 +44,17 @@ const upload = multer({
 
 app.use(cors());
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.redirect('/landing.html');
+});
+
+app.use(express.static('App'));
 
 function buildFilters(query) {
   const keyword = query.keyword?.trim() || '';
@@ -279,8 +290,8 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`API server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`API server running on http://0.0.0.0:${PORT}`);
 });
 
 process.on('SIGINT', () => {
