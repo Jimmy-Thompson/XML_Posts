@@ -33,8 +33,7 @@ GigSafeJobBoard/
 ```
 
 ### Ports
-- **Frontend:** Port 5000 (http-server serving static HTML)
-- **Backend API:** Port 3000 (Express.js)
+- **Unified Server:** Port 5000 (Express.js serves both static frontend and API endpoints)
 
 ### Database Schema
 - **jobs:** Job listings with title, company, location, requirements, benefits, etc.
@@ -76,20 +75,14 @@ Body (multipart/form-data):
 ## Development
 
 ### Running the Application
-The workflow automatically starts both servers:
+The workflow automatically starts the unified server:
 ```bash
 npm start
 ```
 
-This runs:
-- API server on http://localhost:3000
-- Frontend on http://0.0.0.0:5000
-
-### Individual Commands
-```bash
-npm run api  # Start API server only
-npm run dev  # Start frontend only
-```
+This runs the Express server on http://0.0.0.0:5000 which serves:
+- Frontend (static files from App/ directory)
+- API endpoints (/api/jobs, /api/subscribe)
 
 ## Data Sources
 Jobs aggregated from:
@@ -109,7 +102,7 @@ Jobs aggregated from:
   - Consolidated frontend and backend to run on single Express server (port 5000)
   - Renamed landing.html to index.html for automatic root serving
   - Disabled directory listing in Express static file serving
-  - Updated API URLs to use relative paths (same origin)
+  - Fixed mobile compatibility by changing API_URL from `http://localhost:3000/api/jobs` to relative path `/api/jobs`
   - Added cache control headers to prevent stale content
   - Configured deployment for autoscale target
 
