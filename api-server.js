@@ -482,6 +482,45 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
   }
 });
 
+// Analytics endpoint (public) - Track events
+app.post('/api/analytics', (req, res) => {
+  const { event_type, event_data, session_id } = req.body;
+
+  if (!event_type || !session_id) {
+    return res.status(400).json({
+      success: false,
+      error: 'event_type and session_id are required'
+    });
+  }
+
+  const db = getDb();
+
+  try {
+    // Optional: Hash IP for privacy (simple hash)
+    const ipHash = req.ip ? 
+      require('crypto').createHash('sha256').update(req.ip).digest('hex').substring(0, 16) : 
+      null;
+
+    db.prepare(`
+      INSERT INTO analytics_events (event_type, event_data, session_id, ip_hash)
+      VALUES (?, ?, ?, ?)
+    `).run(
+      event_type,
+      event_data ? JSON.stringify(event_data) : null,
+      session_id,
+      ipHash
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error tracking analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to track event'
+    });
+  }
+});
+
 // Admin login endpoint
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
@@ -593,6 +632,94 @@ app.get('/api/admin/submitted-jobs', requireAdmin, (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch submitted jobs'
+    });
+  }
+});
+
+// Protected: Get analytics data
+app.get('/api/admin/analytics', requireAdmin, (req, res) => {
+  const db = getDb();
+
+  try {
+    // Unique visitors (unique session IDs)
+    const uniqueVisitorsTotal = db.prepare(`
+      SELECT COUNT(DISTINCT session_id) as count
+      FROM analytics_events
+      WHERE event_type = 'page_visit'
+    `).get();
+
+    const uniqueVisitorsToday = db.prepare(`
+      SELECT COUNT(DISTINCT session_id) as count
+      FROM analytics_events
+      WHERE event_type = 'page_visit'
+      AND DATE(created_at) = DATE('now')
+    `).get();
+
+    const uniqueVisitorsWeek = db.prepare(`
+      SELECT COUNT(DISTINCT session_id) as count
+      FROM analytics_events
+      WHERE event_type = 'page_visit'
+      AND created_at >= datetime('now', '-7 days')
+    `).get();
+
+    // Popular searches
+    const popularSearches = db.prepare(`
+      SELECT 
+        json_extract(event_data, '$.keyword') as search_term,
+        COUNT(*) as count
+      FROM analytics_events
+      WHERE event_type = 'search'
+      AND json_extract(event_data, '$.keyword') != ''
+      GROUP BY search_term
+      ORDER BY count DESC
+      LIMIT 20
+    `).all();
+
+    // Popular filters
+    const popularFilters = db.prepare(`
+      SELECT 
+        json_extract(event_data, '$.state') as state,
+        json_extract(event_data, '$.city') as city,
+        json_extract(event_data, '$.vehicle') as vehicle,
+        COUNT(*) as count
+      FROM analytics_events
+      WHERE event_type = 'filter'
+      GROUP BY state, city, vehicle
+      ORDER BY count DESC
+      LIMIT 20
+    `).all();
+
+    // Most clicked jobs
+    const mostClickedJobs = db.prepare(`
+      SELECT 
+        json_extract(event_data, '$.title') as job_title,
+        json_extract(event_data, '$.company') as company,
+        COUNT(*) as clicks
+      FROM analytics_events
+      WHERE event_type = 'job_click'
+      GROUP BY job_title, company
+      ORDER BY clicks DESC
+      LIMIT 20
+    `).all();
+
+    res.json({
+      success: true,
+      data: {
+        visitors: {
+          total: uniqueVisitorsTotal.count || 0,
+          today: uniqueVisitorsToday.count || 0,
+          week: uniqueVisitorsWeek.count || 0
+        },
+        searches: popularSearches,
+        filters: popularFilters,
+        jobClicks: mostClickedJobs
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch analytics'
     });
   }
 });
