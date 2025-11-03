@@ -21,6 +21,8 @@ GigSafeJobBoard/
 ├── App/
 │   ├── index.html             # Main frontend interface
 │   ├── post-job.html          # Job posting form page
+│   ├── admin-login.html       # Admin login page
+│   ├── admin.html             # Admin dashboard
 │   └── cities_by_state.json   # Location filter data
 ├── shared/
 │   └── db.js                  # SQLite database connection
@@ -28,8 +30,8 @@ GigSafeJobBoard/
 │   └── master_database/
 │       └── master_jobs.db     # Job database (SQLite)
 ├── uploads/
-│   └── certifications/        # User certification uploads
-├── api-server.js              # Express API server
+│   └── certifications/        # User certification uploads (NOT publicly accessible)
+├── api-server.js              # Express API server with admin auth
 └── package.json               # Dependencies and scripts
 ```
 
@@ -48,6 +50,7 @@ GigSafeJobBoard/
 - Certification search functionality
 - Job alerts subscription with certification upload
 - **Job posting form** - Users can submit jobs that appear for 24 hours
+- **Secure admin portal** - Password-protected dashboard to view subscribers and job submissions
 - Infinite scroll pagination
 - Responsive design for mobile, tablet, and desktop
 
@@ -92,6 +95,55 @@ Body (multipart/form-data):
 - `sourceTag` - Source of subscription
 - `certifications[]` - File uploads (images, PDFs)
 
+## Admin Portal
+
+### Authentication
+The admin portal requires two environment variables:
+- `ADMIN_PASSWORD` - Password for admin login
+- `ADMIN_SESSION_SECRET` - Secret for session encryption
+
+Without these secrets, the server will not start (fail-fast security).
+
+### Admin Pages
+- **/admin-login.html** - Secure login page
+- **/admin.html** - Dashboard with two tabs:
+  - **Subscribers Tab:** View all email subscribers with their certifications and download uploaded files
+  - **Job Submissions Tab:** View all user-submitted job posts
+
+### Admin API Endpoints (Protected)
+
+All admin endpoints require authentication via session cookie.
+
+#### POST /api/admin/login
+Login to admin portal.
+
+Body (JSON):
+- `password` (required)
+
+#### POST /api/admin/logout
+Logout from admin portal.
+
+#### GET /api/admin/check
+Check if current session is authenticated.
+
+#### GET /api/admin/subscribers
+Get all subscribers with their certifications.
+
+Returns:
+- Subscriber info (name, email, location, source)
+- Certification files with download capability
+
+#### GET /api/admin/submitted-jobs
+Get all user-submitted job posts.
+
+Returns:
+- Job details from users who submitted via the post-job form
+
+#### GET /api/admin/download/:certId
+Download a specific certification file.
+
+Requires authentication. Files are NOT publicly accessible.
+
 ## Development
 
 ### Running the Application
@@ -118,6 +170,17 @@ Jobs aggregated from:
 - US-Pack (1 job)
 
 ## Recent Changes
+- **2025-11-03:** Admin Portal
+  - Created secure admin portal with session-based authentication
+  - Added admin-login.html with password authentication
+  - Built admin.html dashboard with two tabs (Subscribers and Job Submissions)
+  - Implemented protected API endpoints: /api/admin/subscribers, /api/admin/submitted-jobs, /api/admin/download/:certId
+  - Added fail-fast security: server requires ADMIN_PASSWORD and ADMIN_SESSION_SECRET environment variables
+  - Removed public access to /uploads directory - files only accessible via authenticated download endpoint
+  - Comprehensive debug logging for subscription system (both frontend and backend)
+  - Fixed subscription form to use relative URL path instead of hardcoded localhost
+
+
 - **2025-10-31:** Job Posting Feature
   - Added `submitted_at` column to jobs table for tracking user-submitted jobs
   - Created POST /api/jobs endpoint for job submissions with validation
