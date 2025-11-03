@@ -175,17 +175,23 @@ app.get('/api/jobs', (req, res) => {
     masterDb.exec(`ATTACH DATABASE '${userDbPath}' AS user_db`);
 
     // Count total jobs from both databases using UNION ALL
+    // Filter out hidden jobs from user_db.jobs
+    const userWhereClause = whereClause === 'WHERE 1=1' 
+      ? 'WHERE hidden = 0' 
+      : whereClause + ' AND hidden = 0';
+    
     const countQuery = `
       SELECT SUM(cnt) as count FROM (
         SELECT COUNT(*) as cnt FROM jobs ${whereClause}
         UNION ALL
-        SELECT COUNT(*) as cnt FROM user_db.jobs ${whereClause}
+        SELECT COUNT(*) as cnt FROM user_db.jobs ${userWhereClause}
       )
     `;
     const { count: totalJobs } = masterDb.prepare(countQuery).get(...params, ...params);
 
     // UNION ALL query to get jobs from both databases with pagination
     // Wrap UNION in subquery to properly apply ORDER BY and LIMIT
+    // Filter out hidden jobs from user_db.jobs
     const unionQuery = filters.keyword
       ? `
         SELECT * FROM (
@@ -207,7 +213,7 @@ app.get('/api/jobs', (req, res) => {
             source_company,
             submitted_at
           FROM user_db.jobs
-          ${whereClause}
+          ${userWhereClause}
           UNION ALL
           SELECT
             id,
@@ -262,7 +268,7 @@ app.get('/api/jobs', (req, res) => {
             source_company,
             submitted_at
           FROM user_db.jobs
-          ${whereClause}
+          ${userWhereClause}
           UNION ALL
           SELECT
             id,
