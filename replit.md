@@ -25,10 +25,11 @@ GigSafeJobBoard/
 │   ├── admin.html             # Admin dashboard
 │   └── cities_by_state.json   # Location filter data
 ├── shared/
-│   └── db.js                  # SQLite database connection
+│   └── db.js                  # SQLite database connections (dual-database)
 ├── outputs/
+│   ├── user_jobs.db           # User-submitted jobs database (persistent)
 │   └── master_database/
-│       └── master_jobs.db     # Job database (SQLite)
+│       └── master_jobs.db     # Scraped jobs database (refreshable)
 ├── uploads/
 │   └── certifications/        # User certification uploads (NOT publicly accessible)
 ├── api-server.js              # Express API server with admin auth
@@ -38,11 +39,39 @@ GigSafeJobBoard/
 ### Ports
 - **Unified Server:** Port 5000 (Express.js serves both static frontend and API endpoints)
 
-### Database Schema
-- **jobs:** Job listings with title, company, location, requirements, benefits, etc. Includes `submitted_at` column to track user-submitted jobs for 24-hour visibility.
+### Database Architecture
+
+**Dual-Database System:**
+The application uses two separate SQLite databases to ensure user submissions persist across master database refreshes:
+
+1. **user_jobs.db** (outputs/user_jobs.db)
+   - Stores user-submitted job postings
+   - Persists independently from master database
+   - All jobs have `submitted_at` timestamp
+   - Never refreshed or overwritten
+
+2. **master_jobs.db** (outputs/master_database/master_jobs.db)
+   - Stores scraped job listings from 10 companies
+   - Can be refreshed with new scraped data without affecting user jobs
+   - Jobs have `submitted_at = NULL`
+   - Contains 1,186+ scraped jobs
+
+**Schema (both databases):**
+- **jobs:** Job listings with title, company, location, requirements, benefits, etc.
+  - `id` - Primary key
+  - `submitted_at` - Timestamp (NULL for scraped jobs, populated for user jobs)
+  - Other fields: job_url, title, company, city, state, address, description, etc.
+
+**Master database only:**
 - **subscribers:** Email subscriptions for job alerts
 - **subscriber_certifications:** Uploaded certification files
 - **analytics_events:** Event tracking for visitor analytics (page visits, searches, filters, job clicks) with session IDs and timestamps
+
+**Query Strategy:**
+- GET /api/jobs uses SQL UNION ALL with ATTACH DATABASE to merge both databases
+- User jobs (submitted_at IS NOT NULL) appear first in feed
+- Pagination and filtering happen entirely in SQL for optimal performance
+- No application-level memory loading or merging
 
 ## Key Features
 - Advanced search across job titles, descriptions, and requirements
@@ -202,6 +231,18 @@ Jobs aggregated from:
 - US-Pack (1 job)
 
 ## Recent Changes
+- **2025-11-03:** Dual-Database System for User Job Persistence
+  - Separated user-submitted jobs from scraped jobs into two independent SQLite databases
+  - Created user_jobs.db (outputs/user_jobs.db) for user submissions - persists across master DB refreshes
+  - Updated POST /api/jobs to insert into user_jobs.db instead of master_jobs.db
+  - Optimized GET /api/jobs with UNION ALL query using ATTACH DATABASE for merging both databases
+  - User jobs now sorted by submitted_at DESC and displayed at top of feed
+  - Modified DELETE /api/jobs to check both databases (user first, then master)
+  - Updated admin /api/admin/submitted-jobs to query user_jobs.db
+  - All pagination and filtering happen in SQL for optimal performance (no N+1 queries)
+  - Database initialization code creates jobs table in user_jobs.db on server startup
+  - Design choice: When swapping master DB, user_jobs.db remains untouched to preserve submissions
+
 - **2025-11-03:** Job Clicks Over Time Charts
   - Added Chart.js library for data visualization
   - Created two interactive line charts in Analytics dashboard:
