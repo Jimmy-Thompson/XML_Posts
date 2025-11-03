@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - GigSafe Job Board</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: #f5f7fa;
+        color: #333;
+      }
+
+      .header {
+        background: white;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .header h1 {
+        font-size: 22px;
+        color: #333;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5568d3;
+      }
+
+      .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #d0d0d0;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 500;
+        color: #666;
+        transition: all 0.2s ease;
+      }
+
+      .tab:hover {
+        color: #333;
+      }
+
+      .tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .stat-card h3 {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .stat-card .number {
+        font-size: 32px;
+        font-weight: 600;
+        color: #667eea;
+      }
+
+      .table-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f8f9fa;
+      }
+
+      th {
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 16px;
+        border-top: 1px solid #f0f0f0;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background: #f8f9fa;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .badge-primary {
+        background: #e7eaff;
+        color: #667eea;
+      }
+
+      .badge-success {
+        background: #d4f4dd;
+        color: #22863a;
+      }
+
+      .cert-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .cert-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .cert-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .download-btn {
+        padding: 4px 10px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .download-btn:hover {
+        background: #5568d3;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+      }
+
+      .empty-state svg {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 16px;
+        opacity: 0.3;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+      }
+
+      .job-details {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .job-details strong {
+        color: #333;
+        display: inline-block;
+        min-width: 100px;
+      }
+
+      @media (max-width: 768px) {
+        table {
+          display: block;
+          overflow-x: auto;
+        }
+
+        th,
+        td {
+          min-width: 120px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Admin Dashboard</h1>
+      <div class="header-actions">
+        <a href="/" class="btn btn-secondary">View Job Board</a>
+        <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="tabs">
+        <button class="tab active" data-tab="subscribers">Subscribers</button>
+        <button class="tab" data-tab="jobs">Job Submissions</button>
+      </div>
+
+      <div id="subscribers-tab" class="tab-content active">
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Total Subscribers</h3>
+            <div class="number" id="totalSubscribers">-</div>
+          </div>
+          <div class="stat-card">
+            <h3>With Certifications</h3>
+            <div class="number" id="subscribersWithCerts">-</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div id="subscribersLoading" class="loading">Loading subscribers...</div>
+          <div id="subscribersEmpty" class="empty-state" style="display: none">
+            <div>No subscribers yet</div>
+          </div>
+          <table id="subscribersTable" style="display: none">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Location</th>
+                <th>Source</th>
+                <th>Certifications</th>
+                <th>Subscribed</th>
+              </tr>
+            </thead>
+            <tbody id="subscribersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="jobs-tab" class="tab-content">
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Total Submissions</h3>
+            <div class="number" id="totalJobs">-</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div id="jobsLoading" class="loading">Loading job submissions...</div>
+          <div id="jobsEmpty" class="empty-state" style="display: none">
+            <div>No job submissions yet</div>
+          </div>
+          <table id="jobsTable" style="display: none">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Pay</th>
+                <th>Details</th>
+                <th>Submitted</th>
+              </tr>
+            </thead>
+            <tbody id="jobsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function checkAuth() {
+        try {
+          const response = await fetch("/api/admin/check");
+          const data = await response.json();
+
+          if (!data.isAuthenticated) {
+            window.location.href = "/admin-login.html";
+          }
+        } catch (error) {
+          console.error("Auth check failed:", error);
+          window.location.href = "/admin-login.html";
+        }
+      }
+
+      checkAuth();
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        try {
+          await fetch("/api/admin/logout", { method: "POST" });
+          window.location.href = "/admin-login.html";
+        } catch (error) {
+          console.error("Logout failed:", error);
+        }
+      });
+
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const tabName = tab.dataset.tab;
+
+          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((c) => c.classList.remove("active"));
+          document.getElementById(`${tabName}-tab`).classList.add("active");
+        });
+      });
+
+      async function loadSubscribers() {
+        try {
+          const response = await fetch("/api/admin/subscribers");
+          const data = await response.json();
+
+          document.getElementById("subscribersLoading").style.display = "none";
+
+          if (!data.success || data.subscribers.length === 0) {
+            document.getElementById("subscribersEmpty").style.display = "block";
+            document.getElementById("totalSubscribers").textContent = "0";
+            document.getElementById("subscribersWithCerts").textContent = "0";
+            return;
+          }
+
+          const subscribers = data.subscribers;
+          document.getElementById("totalSubscribers").textContent =
+            subscribers.length;
+          document.getElementById("subscribersWithCerts").textContent =
+            subscribers.filter((s) => s.certifications.length > 0).length;
+
+          const tbody = document.getElementById("subscribersBody");
+          tbody.innerHTML = "";
+
+          subscribers.forEach((sub) => {
+            const row = document.createElement("tr");
+
+            const name = [sub.first_name, sub.last_name]
+              .filter(Boolean)
+              .join(" ") || "-";
+
+            const location = [sub.city, sub.state].filter(Boolean).join(", ") || "-";
+
+            const certsHtml =
+              sub.certifications.length > 0
+                ? `<ul class="cert-list">
+                ${sub.certifications
+                  .map(
+                    (cert) => `
+                  <li class="cert-item">
+                    <span class="badge badge-primary">${cert.certification_type}</span>
+                    <a href="/api/admin/download/${cert.id}" class="download-btn">Download</a>
+                  </li>
+                `
+                  )
+                  .join("")}
+              </ul>`
+                : "-";
+
+            const date = new Date(sub.created_at).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            row.innerHTML = `
+              <td>${name}</td>
+              <td>${sub.email}</td>
+              <td>${location}</td>
+              <td><span class="badge badge-success">${sub.source_tag || "Direct"}</span></td>
+              <td>${certsHtml}</td>
+              <td>${date}</td>
+            `;
+
+            tbody.appendChild(row);
+          });
+
+          document.getElementById("subscribersTable").style.display = "table";
+        } catch (error) {
+          console.error("Error loading subscribers:", error);
+          document.getElementById("subscribersLoading").textContent =
+            "Error loading subscribers";
+        }
+      }
+
+      async function loadJobs() {
+        try {
+          const response = await fetch("/api/admin/submitted-jobs");
+          const data = await response.json();
+
+          document.getElementById("jobsLoading").style.display = "none";
+
+          if (!data.success || data.jobs.length === 0) {
+            document.getElementById("jobsEmpty").style.display = "block";
+            document.getElementById("totalJobs").textContent = "0";
+            return;
+          }
+
+          const jobs = data.jobs;
+          document.getElementById("totalJobs").textContent = jobs.length;
+
+          const tbody = document.getElementById("jobsBody");
+          tbody.innerHTML = "";
+
+          jobs.forEach((job) => {
+            const row = document.createElement("tr");
+
+            const location = [job.city, job.state].filter(Boolean).join(", ") || "-";
+
+            const pay = job.pay_min && job.pay_max
+              ? `$${job.pay_min} - $${job.pay_max}/${job.pay_frequency || "hr"}`
+              : "-";
+
+            const details = `
+              <div class="job-details">
+                ${job.general_requirements ? `<div><strong>Requirements:</strong> ${job.general_requirements}</div>` : ""}
+                ${job.certifications ? `<div><strong>Certifications:</strong> ${job.certifications}</div>` : ""}
+                ${job.vehicle_requirements ? `<div><strong>Vehicle:</strong> ${job.vehicle_requirements}</div>` : ""}
+                ${job.schedule_details ? `<div><strong>Schedule:</strong> ${job.schedule_details}</div>` : ""}
+              </div>
+            `;
+
+            const date = new Date(job.submitted_at).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            row.innerHTML = `
+              <td><strong>${job.title}</strong></td>
+              <td>${job.company || "-"}</td>
+              <td>${location}</td>
+              <td>${pay}</td>
+              <td>${details}</td>
+              <td>${date}</td>
+            `;
+
+            tbody.appendChild(row);
+          });
+
+          document.getElementById("jobsTable").style.display = "table";
+        } catch (error) {
+          console.error("Error loading jobs:", error);
+          document.getElementById("jobsLoading").textContent =
+            "Error loading job submissions";
+        }
+      }
+
+      loadSubscribers();
+      loadJobs();
+    </script>
+  </body>
+</html>

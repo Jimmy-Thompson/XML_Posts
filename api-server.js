@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
+import session from 'express-session';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -45,6 +46,27 @@ const upload = multer({
 app.use(cors());
 app.use(express.json());
 
+// Session management for admin authentication
+const sessionSecret = process.env.ADMIN_SESSION_SECRET;
+if (!sessionSecret) {
+  console.error('FATAL: ADMIN_SESSION_SECRET environment variable is not set.');
+  console.error('The admin portal requires a strong session secret for security.');
+  console.error('Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
@@ -60,8 +82,16 @@ app.use(express.static('App', {
   extensions: ['html']
 }));
 
-// Serve uploaded certification files
-app.use('/uploads', express.static('uploads'));
+// Middleware to check admin authentication
+const requireAdmin = (req, res, next) => {
+  if (req.session && req.session.isAdmin) {
+    return next();
+  }
+  res.status(401).json({
+    success: false,
+    error: 'Unauthorized - Admin access required'
+  });
+};
 
 function buildFilters(query) {
   const keyword = query.keyword?.trim() || '';
@@ -452,8 +482,58 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
   }
 });
 
-// API endpoint to get all subscribers and their certifications
-app.get('/api/subscribers', (req, res) => {
+// Admin login endpoint
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!adminPassword) {
+    console.error('ADMIN_PASSWORD not configured');
+    return res.status(503).json({
+      success: false,
+      error: 'Admin portal not configured. Please contact administrator.'
+    });
+  }
+
+  if (password === adminPassword) {
+    req.session.isAdmin = true;
+    res.json({
+      success: true,
+      message: 'Login successful'
+    });
+  } else {
+    res.status(401).json({
+      success: false,
+      error: 'Invalid password'
+    });
+  }
+});
+
+// Admin logout endpoint
+app.post('/api/admin/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to logout'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  });
+});
+
+// Check admin authentication status
+app.get('/api/admin/check', (req, res) => {
+  res.json({
+    isAuthenticated: !!(req.session && req.session.isAdmin)
+  });
+});
+
+// Protected: Get all subscribers and their certifications
+app.get('/api/admin/subscribers', requireAdmin, (req, res) => {
   const db = getDb();
 
   try {
@@ -487,6 +567,72 @@ app.get('/api/subscribers', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch subscribers'
+    });
+  }
+});
+
+// Protected: Get all submitted jobs
+app.get('/api/admin/submitted-jobs', requireAdmin, (req, res) => {
+  const db = getDb();
+
+  try {
+    const jobs = db.prepare(`
+      SELECT *
+      FROM jobs
+      WHERE submitted_at IS NOT NULL
+      ORDER BY submitted_at DESC
+    `).all();
+
+    res.json({
+      success: true,
+      count: jobs.length,
+      jobs: jobs
+    });
+  } catch (error) {
+    console.error('Error fetching submitted jobs:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch submitted jobs'
+    });
+  }
+});
+
+// Protected: Download certification file
+app.get('/api/admin/download/:certId', requireAdmin, (req, res) => {
+  const { certId } = req.params;
+  const db = getDb();
+
+  try {
+    const cert = db.prepare(`
+      SELECT file_path, file_name, mime_type
+      FROM subscriber_certifications
+      WHERE id = ?
+    `).get(certId);
+
+    if (!cert) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certification file not found'
+      });
+    }
+
+    const filePath = path.join(__dirname, cert.file_path);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'File not found on server'
+      });
+    }
+
+    res.setHeader('Content-Disposition', `attachment; filename="${cert.file_name}"`);
+    res.setHeader('Content-Type', cert.mime_type);
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to download file'
     });
   }
 });
