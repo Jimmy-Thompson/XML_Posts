@@ -464,6 +464,55 @@ app.delete('/api/jobs/:id', (req, res) => {
   }
 });
 
+// Protected: Toggle hidden status for user-submitted job
+app.patch('/api/admin/jobs/:id/hide', requireAdmin, (req, res) => {
+  const jobId = Number.parseInt(req.params.id);
+
+  if (!jobId || isNaN(jobId)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Valid job ID is required'
+    });
+  }
+
+  const userDb = getUserDb();
+
+  try {
+    // Get current job to check if it exists and get current hidden status
+    const job = userDb.prepare('SELECT id, hidden FROM jobs WHERE id = ?').get(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        error: 'User-submitted job not found'
+      });
+    }
+
+    // Toggle hidden status
+    const newHiddenStatus = job.hidden ? 0 : 1;
+    const result = userDb.prepare('UPDATE jobs SET hidden = ? WHERE id = ?').run(newHiddenStatus, jobId);
+
+    if (result.changes === 0) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to update job visibility'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: newHiddenStatus ? 'Job hidden successfully' : 'Job unhidden successfully',
+      hidden: newHiddenStatus === 1
+    });
+  } catch (error) {
+    console.error('Error toggling job visibility:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to toggle job visibility'
+    });
+  }
+});
+
 app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
   console.log('======================================');
   console.log('SUBSCRIBE REQUEST RECEIVED');
@@ -998,9 +1047,18 @@ function initializeUserJobsDb() {
       insurance_requirement TEXT,
       schedule_details TEXT,
       source_company TEXT,
-      submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      hidden INTEGER DEFAULT 0
     )
   `);
+  
+  // Add hidden column if it doesn't exist (migration for existing databases)
+  try {
+    userDb.exec(`ALTER TABLE jobs ADD COLUMN hidden INTEGER DEFAULT 0`);
+    console.log('Added hidden column to user jobs table');
+  } catch (error) {
+    // Column already exists, ignore error
+  }
   
   console.log('User jobs database initialized');
 }
