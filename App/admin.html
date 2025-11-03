@@ -716,7 +716,8 @@
             });
 
             // Calculate job status (active if within 24 hours)
-            const submittedAt = new Date(job.submitted_at);
+            // Database stores UTC timestamps, so we need to parse as UTC
+            const submittedAt = new Date(job.submitted_at + ' UTC');
             const now = new Date();
             const hoursSinceSubmitted = (now - submittedAt) / (1000 * 60 * 60);
             const isActive = hoursSinceSubmitted < 24;
