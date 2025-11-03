@@ -930,6 +930,34 @@
         }
       }
 
+      async function toggleJobVisibility(jobId, currentlyHidden) {
+        try {
+          const action = currentlyHidden ? 'unhide' : 'hide';
+          const response = await fetch(`/api/admin/jobs/${jobId}/hide`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ hidden: !currentlyHidden })
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            alert(`Failed to ${action} job: ${data.error || 'Unknown error'}`);
+            return;
+          }
+
+          console.log(`Job ${jobId} ${action}d successfully`);
+          
+          // Reload the jobs table to show updated status
+          await loadJobs();
+        } catch (error) {
+          console.error('Error toggling job visibility:', error);
+          alert('An error occurred while updating the job visibility');
+        }
+      }
+
       let totalClicksChartInstance = null;
       let top5JobsChartInstance = null;
 
