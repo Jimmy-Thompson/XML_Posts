@@ -325,6 +325,15 @@ app.delete('/api/jobs/:id', (req, res) => {
 });
 
 app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
+  console.log('======================================');
+  console.log('SUBSCRIBE REQUEST RECEIVED');
+  console.log('======================================');
+  console.log('Request body:', req.body);
+  console.log('Files received:', req.files ? req.files.length : 0);
+  if (req.files) {
+    req.files.forEach((f, i) => console.log(`  File ${i}:`, f.originalname, f.size, 'bytes'));
+  }
+
   const {
     email,
     firstName,
@@ -334,7 +343,10 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
     sourceTag
   } = req.body ?? {};
 
+  console.log('Extracted fields:', { email, firstName, lastName, city, state, sourceTag });
+
   if (!email || typeof email !== 'string' || !email.includes('@')) {
+    console.log('ERROR: Invalid email');
     return res.status(400).json({
       success: false,
       error: 'Valid email address is required'
@@ -348,11 +360,15 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
   const cityValue = typeof city === 'string' && city.trim() ? city.trim() : null;
   const stateValue = typeof state === 'string' && state.trim() ? state.trim() : null;
 
+  console.log('Sanitized values:', { sanitizedEmail, first, last, cityValue, stateValue, tag });
+
   const db = getDb();
 
   try {
+    console.log('Starting database transaction...');
     // Use a transaction to ensure both subscriber and certifications are saved together
     db.transaction(() => {
+      console.log('Inserting subscriber into database...');
       // Insert or update subscriber
       const result = db.prepare(`
         INSERT INTO subscribers (email, first_name, last_name, city, state, source_tag)
@@ -368,9 +384,11 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
 
       // Get the subscriber ID from RETURNING clause
       const subscriberId = result.id;
+      console.log('Subscriber saved with ID:', subscriberId);
 
       // Save certification files if any were uploaded
       if (req.files && req.files.length > 0) {
+        console.log(`Saving ${req.files.length} certification files...`);
         const insertCert = db.prepare(`
           INSERT INTO subscriber_certifications
           (subscriber_id, certification_type, file_name, file_path, file_size, mime_type)
@@ -382,6 +400,7 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
           const certType = req.body[`cert_type_${index}`] || 'Unknown';
           const relativePath = path.join('uploads', 'certifications', file.filename);
 
+          console.log(`  Cert ${index}: ${certType} - ${file.originalname}`);
           insertCert.run(
             subscriberId,
             certType,
@@ -391,16 +410,26 @@ app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
             file.mimetype
           );
         });
+        console.log('All certifications saved successfully');
+      } else {
+        console.log('No certification files to save');
       }
     })();
 
+    console.log('Transaction committed successfully');
+    console.log('======================================');
     res.json({
       success: true,
       message: 'Subscribed successfully',
       filesUploaded: req.files ? req.files.length : 0
     });
   } catch (error) {
-    console.error('Error storing subscriber:', error);
+    console.error('======================================');
+    console.error('ERROR storing subscriber:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('======================================');
 
     // Clean up uploaded files if there was an error
     if (req.files) {

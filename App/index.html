@@ -2766,6 +2766,15 @@
             }
 
             try {
+              console.log("======================================");
+              console.log("SUBSCRIBE FORM SUBMISSION STARTED");
+              console.log("======================================");
+              console.log("Form data:", { firstName, lastName, email, city, state });
+              console.log("Uploaded certifications:", uploadedCertifications.length);
+              uploadedCertifications.forEach((cert, i) => {
+                console.log(`  Cert ${i}: ${cert.cert} - ${cert.file.name} (${cert.file.size} bytes)`);
+              });
+
               // Create FormData to handle file uploads
               const formData = new FormData();
               formData.append("firstName", firstName);
@@ -2781,6 +2790,8 @@
                 formData.append(`cert_type_${index}`, item.cert);
               });
 
+              console.log("FormData prepared, sending to /api/subscribe...");
+
               const response = await fetch(
                 "/api/subscribe",
                 {
@@ -2790,11 +2801,18 @@
                 },
               );
 
+              console.log("Response received:", response.status, response.statusText);
+              
               const result = await response.json();
+              console.log("Response body:", result);
 
               if (!response.ok || !result.success) {
+                console.error("Subscription failed:", result.error);
                 throw new Error(result.error || "Failed to subscribe");
               }
+
+              console.log("Subscription successful!");
+              console.log("======================================");
 
               subscribeForm.reset();
               uploadedCertifications.length = 0;
@@ -2817,7 +2835,12 @@
                 document.body.style.overflow = "";
               }
             } catch (error) {
-              console.error("Failed to submit subscription:", error);
+              console.error("======================================");
+              console.error("SUBSCRIPTION ERROR:", error);
+              console.error("Error name:", error.name);
+              console.error("Error message:", error.message);
+              console.error("Error stack:", error.stack);
+              console.error("======================================");
               alert(
                 error.message ||
                   "Unable to submit your subscription. Please try again.",
