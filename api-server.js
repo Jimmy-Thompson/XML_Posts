@@ -4,6 +4,7 @@ import multer from 'multer';
 import session from 'express-session';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { getDb, closeDb } from './shared/db.js';
 
@@ -498,7 +499,7 @@ app.post('/api/analytics', (req, res) => {
   try {
     // Optional: Hash IP for privacy (simple hash)
     const ipHash = req.ip ? 
-      require('crypto').createHash('sha256').update(req.ip).digest('hex').substring(0, 16) : 
+      crypto.createHash('sha256').update(req.ip).digest('hex').substring(0, 16) : 
       null;
 
     db.prepare(`
@@ -694,25 +695,41 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
       SELECT 
         json_extract(event_data, '$.title') as job_title,
         json_extract(event_data, '$.company') as company,
+        json_extract(event_data, '$.location') as location,
         COUNT(*) as clicks
       FROM analytics_events
       WHERE event_type = 'job_click'
-      GROUP BY job_title, company
+      GROUP BY job_title, company, location
       ORDER BY clicks DESC
       LIMIT 20
     `).all();
 
     res.json({
       success: true,
-      data: {
-        visitors: {
-          total: uniqueVisitorsTotal.count || 0,
-          today: uniqueVisitorsToday.count || 0,
-          week: uniqueVisitorsWeek.count || 0
-        },
-        searches: popularSearches,
-        filters: popularFilters,
-        jobClicks: mostClickedJobs
+      stats: {
+        totalVisitors: uniqueVisitorsTotal.count || 0,
+        todayVisitors: uniqueVisitorsToday.count || 0,
+        weekVisitors: uniqueVisitorsWeek.count || 0,
+        topSearches: popularSearches.map(s => ({
+          keyword: s.search_term,
+          count: s.count
+        })),
+        topFilters: popularFilters.map(f => {
+          const parts = [];
+          if (f.state) parts.push(`State: ${f.state}`);
+          if (f.city) parts.push(`City: ${f.city}`);
+          if (f.vehicle && f.vehicle !== 'Any') parts.push(`Vehicle: ${f.vehicle}`);
+          return {
+            filter: parts.join(', ') || 'Various filters',
+            count: f.count
+          };
+        }),
+        topClicks: mostClickedJobs.map(j => ({
+          title: j.job_title,
+          company: j.company,
+          location: j.location || 'Location not tracked',
+          count: j.clicks
+        }))
       }
     });
   } catch (error) {
