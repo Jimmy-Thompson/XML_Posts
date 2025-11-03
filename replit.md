@@ -196,6 +196,13 @@ Jobs aggregated from:
 - US-Pack (1 job)
 
 ## Recent Changes
+- **2025-11-03:** Enhanced Filter Change Tracking
+  - Added real-time tracking for individual filter selections (state, city, vehicle)
+  - Each dropdown change now fires a 'filter_change' event with filter_type and value
+  - Created "Individual Filter Selections" section in Analytics dashboard
+  - Captures user exploration behavior even before they click search
+  - Helps identify popular locations and vehicle types users are interested in
+
 - **2025-11-03:** Custom Analytics System
   - Created analytics_events table in SQLite database with session-based tracking
   - Implemented POST /api/analytics endpoint for tracking page visits, searches, filters, and job clicks
