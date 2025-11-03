@@ -289,6 +289,41 @@ app.post('/api/jobs', (req, res) => {
   }
 });
 
+app.delete('/api/jobs/:id', (req, res) => {
+  const jobId = Number.parseInt(req.params.id);
+
+  if (!jobId || isNaN(jobId)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Valid job ID is required'
+    });
+  }
+
+  const db = getDb();
+
+  try {
+    const result = db.prepare('DELETE FROM jobs WHERE id = ?').run(jobId);
+
+    if (result.changes === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Job not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Job deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting job:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete job'
+    });
+  }
+});
+
 app.post('/api/subscribe', upload.array('certifications', 10), (req, res) => {
   const {
     email,
