@@ -2059,6 +2059,12 @@
           const selectedState = e.target.value;
           console.log("State changed to:", selectedState || "Any");
 
+          // Track filter change
+          trackEvent('filter_change', {
+            filter_type: 'state',
+            value: selectedState || 'Any'
+          });
+
           // Reset city to "Any"
           if (citySelect) {
             citySelect.value = "";
@@ -2076,6 +2082,13 @@
       if (citySelect) {
         citySelect.addEventListener("change", () => {
           console.log("City changed to:", citySelect.value || "Any");
+          
+          // Track filter change
+          trackEvent('filter_change', {
+            filter_type: 'city',
+            value: citySelect.value || 'Any'
+          });
+          
           // Trigger search with new city filter
           triggerSearch();
         });
@@ -2085,6 +2098,13 @@
       if (vehicleSelect) {
         vehicleSelect.addEventListener("change", () => {
           console.log("Vehicle changed to:", vehicleSelect.value || "Any");
+          
+          // Track filter change
+          trackEvent('filter_change', {
+            filter_type: 'vehicle',
+            value: vehicleSelect.value || 'Any'
+          });
+          
           // Trigger search with new vehicle filter
           triggerSearch();
         });

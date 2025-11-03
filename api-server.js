@@ -690,6 +690,20 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
       LIMIT 20
     `).all();
 
+    // Individual filter selections (filter_change events)
+    const filterSelections = db.prepare(`
+      SELECT 
+        json_extract(event_data, '$.filter_type') as filter_type,
+        json_extract(event_data, '$.value') as filter_value,
+        COUNT(*) as count
+      FROM analytics_events
+      WHERE event_type = 'filter_change'
+      AND json_extract(event_data, '$.value') != 'Any'
+      GROUP BY filter_type, filter_value
+      ORDER BY count DESC
+      LIMIT 30
+    `).all();
+
     // Most clicked jobs
     const mostClickedJobs = db.prepare(`
       SELECT 
@@ -724,6 +738,11 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
             count: f.count
           };
         }),
+        topFilterSelections: filterSelections.map(fs => ({
+          type: fs.filter_type,
+          value: fs.filter_value,
+          count: fs.count
+        })),
         topClicks: mostClickedJobs.map(j => ({
           title: j.job_title,
           company: j.company,

@@ -539,6 +539,24 @@
           </table>
         </div>
 
+        <h2>Individual Filter Selections</h2>
+        <div class="table-container">
+          <div id="filterSelectionsLoading" class="loading">Loading filter selection data...</div>
+          <div id="filterSelectionsEmpty" class="empty-state" style="display: none">
+            <div>No individual filter selections yet</div>
+          </div>
+          <table id="filterSelectionsTable" style="display: none">
+            <thead>
+              <tr>
+                <th>Filter Type</th>
+                <th>Value</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody id="filterSelectionsBody"></tbody>
+          </table>
+        </div>
+
         <h2>Popular Job Clicks</h2>
         <div class="table-container">
           <div id="clicksLoading" class="loading">Loading click data...</div>
@@ -906,6 +924,31 @@
             filtersTable.style.display = "table";
           } else {
             filtersEmpty.style.display = "block";
+          }
+
+          // Individual filter selections
+          const filterSelectionsBody = document.getElementById("filterSelectionsBody");
+          const filterSelectionsLoading = document.getElementById("filterSelectionsLoading");
+          const filterSelectionsEmpty = document.getElementById("filterSelectionsEmpty");
+          const filterSelectionsTable = document.getElementById("filterSelectionsTable");
+
+          filterSelectionsLoading.style.display = "none";
+
+          if (stats.topFilterSelections && stats.topFilterSelections.length > 0) {
+            filterSelectionsBody.innerHTML = "";
+            stats.topFilterSelections.forEach((selection) => {
+              const row = document.createElement("tr");
+              const typeLabel = selection.type.charAt(0).toUpperCase() + selection.type.slice(1);
+              row.innerHTML = `
+                <td><strong>${typeLabel}</strong></td>
+                <td>${selection.value}</td>
+                <td>${selection.count}</td>
+              `;
+              filterSelectionsBody.appendChild(row);
+            });
+            filterSelectionsTable.style.display = "table";
+          } else {
+            filterSelectionsEmpty.style.display = "block";
           }
 
           // Popular job clicks
