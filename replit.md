@@ -1,313 +1,56 @@
-# GigSafe Job Board - Replit Project
+# GigSafe Job Board
 
 ## Overview
-GigSafe Job Board is a job aggregator for delivery driver and logistics positions, featuring 1,186+ jobs from 10 companies including Amazon DSP, Airspace, GoPuff, and more.
-
-**Purpose:** Help delivery drivers and logistics workers find relevant job opportunities with advanced search and filtering capabilities.
-
-**Current State:** Fully functional job board with API backend and responsive frontend.
-
-## Project Architecture
-
-### Tech Stack
-- **Frontend:** Vanilla HTML/CSS/JavaScript with modern design
-- **Backend:** Express.js API server
-- **Database:** SQLite (better-sqlite3)
-- **Analytics:** PostHog (user behavior tracking)
-
-### Structure
-```
-GigSafeJobBoard/
-├── App/
-│   ├── index.html             # Main frontend interface
-│   ├── post-job.html          # Job posting form page
-│   ├── admin-login.html       # Admin login page
-│   ├── admin.html             # Admin dashboard
-│   └── cities_by_state.json   # Location filter data
-├── shared/
-│   └── db.js                  # SQLite database connections (dual-database)
-├── outputs/
-│   ├── user_jobs.db           # User-submitted jobs database (persistent)
-│   └── master_database/
-│       └── master_jobs.db     # Scraped jobs database (refreshable)
-├── uploads/
-│   └── certifications/        # User certification uploads (NOT publicly accessible)
-├── api-server.js              # Express API server with admin auth
-└── package.json               # Dependencies and scripts
-```
-
-### Ports
-- **Unified Server:** Port 5000 (Express.js serves both static frontend and API endpoints)
-
-### Database Architecture
-
-**Dual-Database System:**
-The application uses two separate SQLite databases to ensure user submissions persist across master database refreshes:
-
-1. **user_jobs.db** (outputs/user_jobs.db)
-   - Stores user-submitted job postings
-   - Persists independently from master database
-   - All jobs have `submitted_at` timestamp
-   - Never refreshed or overwritten
-
-2. **master_jobs.db** (outputs/master_database/master_jobs.db)
-   - Stores scraped job listings from 10 companies
-   - Can be refreshed with new scraped data without affecting user jobs
-   - Jobs have `submitted_at = NULL`
-   - Contains 1,186+ scraped jobs
-
-**Schema (both databases):**
-- **jobs:** Job listings with title, company, location, requirements, benefits, etc.
-  - `id` - Primary key
-  - `submitted_at` - Timestamp (NULL for scraped jobs, populated for user jobs)
-  - Other fields: job_url, title, company, city, state, address, description, etc.
-
-**Master database only:**
-- **subscribers:** Email subscriptions for job alerts
-- **subscriber_certifications:** Uploaded certification files
-- **analytics_events:** Event tracking for visitor analytics (page visits, searches, filters, job clicks) with session IDs and timestamps
-
-**Query Strategy:**
-- GET /api/jobs uses SQL UNION ALL with ATTACH DATABASE to merge both databases
-- User jobs (submitted_at IS NOT NULL) appear first in feed
-- Pagination and filtering happen entirely in SQL for optimal performance
-- No application-level memory loading or merging
-
-## Key Features
-- Advanced search across job titles, descriptions, and requirements
-- Location filtering by state and city
-- Vehicle type filtering (Van, Box Truck, Car, etc.)
-- Certification search functionality
-- Job alerts subscription with certification upload
-- **Job posting form** - Users can submit jobs that appear for 24 hours
-- **Secure admin portal** - Password-protected dashboard to view subscribers, job submissions, and analytics
-- **Custom analytics system** - Track page visits, searches, filters, and job clicks with session-based de-duplication
-- Infinite scroll pagination
-- Responsive design for mobile, tablet, and desktop
-
-## API Endpoints
-
-### GET /api/jobs
-Fetch jobs with pagination and filtering.
-
-Query Parameters:
-- `page` - Page number (default: 1)
-- `limit` - Jobs per page (default: 20)
-- `keyword` - Search term for title/description/company
-- `state` - Filter by state (e.g., "CA", "TX")
-- `city` - Filter by city
-- `vehicle` - Filter by vehicle requirement
-- `certifications` - Comma-separated certification list
-
-### POST /api/jobs
-Submit a new job posting (visible for 24 hours).
-
-Body (JSON):
-- `job_url` (required) - Application URL
-- `title` (required) - Job title
-- `company` (required) - Company name
-- `city` (required) - City
-- `state` (required) - 2-letter state code
-- `description` (required) - Job description
-- `pay` (required) - Compensation details
-- `address` - Full street address (optional)
-- `general_requirements` - Job requirements (optional)
-- `schedule_details` - Work schedule (optional)
-- `benefits` - Benefits offered (optional)
-- `vehicle_requirements` - Vehicle requirements (optional)
-- `insurance_requirement` - Insurance requirements (optional)
-
-### POST /api/subscribe
-Subscribe to job alerts with optional certification uploads.
-
-Body (multipart/form-data):
-- `email` (required)
-- `firstName`, `lastName`, `city`, `state`
-- `sourceTag` - Source of subscription
-- `certifications[]` - File uploads (images, PDFs)
-
-## Admin Portal
-
-### Authentication
-The admin portal requires two environment variables:
-- `ADMIN_PASSWORD` - Password for admin login
-- `ADMIN_SESSION_SECRET` - Secret for session encryption
-
-Without these secrets, the server will not start (fail-fast security).
-
-### Admin Pages
-- **/admin-login.html** - Secure login page
-- **/admin.html** - Dashboard with three tabs:
-  - **Subscribers Tab:** View all email subscribers with their certifications and download uploaded files
-  - **Job Submissions Tab:** View all user-submitted job posts
-  - **Analytics Tab:** View visitor statistics, popular searches, filters, and job clicks
-
-### Admin API Endpoints (Protected)
-
-All admin endpoints require authentication via session cookie.
-
-#### POST /api/admin/login
-Login to admin portal.
-
-Body (JSON):
-- `password` (required)
-
-#### POST /api/admin/logout
-Logout from admin portal.
-
-#### GET /api/admin/check
-Check if current session is authenticated.
-
-#### GET /api/admin/subscribers
-Get all subscribers with their certifications.
-
-Returns:
-- Subscriber info (name, email, location, source)
-- Certification files with download capability
-
-#### GET /api/admin/submitted-jobs
-Get all user-submitted job posts.
-
-Returns:
-- Job details from users who submitted via the post-job form
-
-#### GET /api/admin/download/:certId
-Download a specific certification file.
-
-Requires authentication. Files are NOT publicly accessible.
-
-#### GET /api/admin/analytics
-Get aggregated analytics statistics with optional time-series data.
-
-Requires authentication.
-
-Query Parameters:
-- `timeRange` - Time range filter (optional): "all", "today", "yesterday", "7days", "14days"
-
-Returns:
-- `totalVisitors` - Total unique visitors (unique session IDs)
-- `todayVisitors` - Unique visitors today
-- `weekVisitors` - Unique visitors this week
-- `topSearches` - Most popular search keywords with counts
-- `topFilters` - Most used filter combinations with counts
-- `topFilterSelections` - Individual filter selections (state, city, vehicle) with counts
-- `topClicks` - Most clicked jobs with title, company, location, and click counts
-- `clicksOverTime` - Array of {date, clicks} for total daily clicks (filtered by timeRange)
-- `top5JobsOverTime` - Array of top 5 jobs with their daily click data (filtered by timeRange)
-
-### Public API Endpoints
-
-#### POST /api/analytics
-Track analytics events (public endpoint).
-
-Body (JSON):
-- `event_type` (required) - Event type: "page_visit", "search", "filter", or "job_click"
-- `event_data` (optional) - JSON object with event-specific data
-- `session_id` (required) - Unique session identifier
-
-## Development
-
-### Running the Application
-The workflow automatically starts the unified server:
-```bash
-npm start
-```
-
-This runs the Express server on http://0.0.0.0:5000 which serves:
-- Frontend (static files from App/ directory)
-- API endpoints (/api/jobs, /api/subscribe)
-
-## Data Sources
-Jobs aggregated from:
-- Amazon DSP (482 jobs)
-- Airspace (283 jobs)
-- GoPuff (181 jobs)
-- Dropoff (78 jobs)
-- MedSpeed (74 jobs)
-- RedWagon (33 jobs)
-- MDS-RX (25 jobs)
-- SDS-RX (24 jobs)
-- BlueJay Logistics (5 jobs)
-- US-Pack (1 job)
-
-## Recent Changes
-- **2025-11-03:** Dual-Database System for User Job Persistence
-  - Separated user-submitted jobs from scraped jobs into two independent SQLite databases
-  - Created user_jobs.db (outputs/user_jobs.db) for user submissions - persists across master DB refreshes
-  - Updated POST /api/jobs to insert into user_jobs.db instead of master_jobs.db
-  - Optimized GET /api/jobs with UNION ALL query using ATTACH DATABASE for merging both databases
-  - User jobs now sorted by submitted_at DESC and displayed at top of feed
-  - Modified DELETE /api/jobs to check both databases (user first, then master)
-  - Updated admin /api/admin/submitted-jobs to query user_jobs.db
-  - All pagination and filtering happen in SQL for optimal performance (no N+1 queries)
-  - Database initialization code creates jobs table in user_jobs.db on server startup
-  - Design choice: When swapping master DB, user_jobs.db remains untouched to preserve submissions
-
-- **2025-11-03:** Job Clicks Over Time Charts
-  - Added Chart.js library for data visualization
-  - Created two interactive line charts in Analytics dashboard:
-    - Total Clicks Per Day: Shows overall daily click volume
-    - Top 5 Jobs Clicks Over Time: Individual trend lines for most popular jobs
-  - Time range selector with options: All Time, Today, Yesterday, Last 7 Days, Last 14 Days
-  - Backend analytics endpoint now returns time-series data (clicksOverTime, top5JobsOverTime)
-  - Charts automatically refresh when time range changes
-  - Hover tooltips show exact click counts for each date
-  - Color-coded lines for easy differentiation of job trends
-
-- **2025-11-03:** Enhanced Filter Change Tracking
-  - Added real-time tracking for individual filter selections (state, city, vehicle)
-  - Each dropdown change now fires a 'filter_change' event with filter_type and value
-  - Created "Individual Filter Selections" section in Analytics dashboard
-  - Captures user exploration behavior even before they click search
-  - Helps identify popular locations and vehicle types users are interested in
-
-- **2025-11-03:** Custom Analytics System
-  - Created analytics_events table in SQLite database with session-based tracking
-  - Implemented POST /api/analytics endpoint for tracking page visits, searches, filters, and job clicks
-  - Added GET /api/admin/analytics endpoint for fetching aggregated statistics
-  - Built Analytics tab in admin dashboard with visitor stats, popular searches, filters, and job clicks
-  - Integrated frontend tracking code using sessionStorage for session IDs
-  - Session-based de-duplication ensures one page_visit per session
-  - Fire-and-forget event tracking to avoid blocking user experience
-
-- **2025-11-03:** Admin Portal
-  - Created secure admin portal with session-based authentication
-  - Added admin-login.html with password authentication
-  - Built admin.html dashboard with three tabs (Subscribers, Job Submissions, and Analytics)
-  - Implemented protected API endpoints: /api/admin/subscribers, /api/admin/submitted-jobs, /api/admin/download/:certId
-  - Added fail-fast security: server requires ADMIN_PASSWORD and ADMIN_SESSION_SECRET environment variables
-  - Removed public access to /uploads directory - files only accessible via authenticated download endpoint
-  - Comprehensive debug logging for subscription system (both frontend and backend)
-  - Fixed subscription form to use relative URL path instead of hardcoded localhost
-
-
-- **2025-10-31:** Job Posting Feature
-  - Added `submitted_at` column to jobs table for tracking user-submitted jobs
-  - Created POST /api/jobs endpoint for job submissions with validation
-  - Implemented 24-hour filtering: user-submitted jobs automatically hide after 24 hours (remain in database)
-  - Built post-job.html form page with all job fields and success modal preview
-  - Added "Post a Job" link to main navigation
-  - Scraped jobs (submitted_at = NULL) unaffected by time-based filtering
-
-- **2025-10-31:** Configured for Replit environment
-  - Consolidated frontend and backend to run on single Express server (port 5000)
-  - Renamed landing.html to index.html for automatic root serving
-  - Disabled directory listing in Express static file serving
-  - Fixed mobile compatibility by changing API_URL from `http://localhost:3000/api/jobs` to relative path `/api/js`
-  - Added cache control headers to prevent stale content
-  - Configured deployment for autoscale target
-  - Fixed Subscribe button bell icon preservation by targeting `.subscribe-text` span instead of replacing entire button content
-  - Improved mobile subscribe modal layout with proper spacing (85vh max-height, 20px margins, adjusted padding) to prevent form from touching screen edges
-  - Optimized mobile jobs section layout: hidden "Available Jobs" heading and reduced vertical spacing (32px top padding, 24px header margin) for better space efficiency
-  - Reduced mobile hero section padding from 80px/60px to 40px/40px (top/bottom) for more compact filter area
+GigSafe Job Board is a specialized job aggregator for delivery driver and logistics positions, featuring over 1,186 jobs from 10 major companies including Amazon DSP, Airspace, and GoPuff. Its primary purpose is to help delivery drivers and logistics workers efficiently find relevant job opportunities through advanced search, filtering capabilities, and a user-friendly interface. The project aims to be the go-to platform for logistics employment, offering both scraped and user-submitted job listings.
 
 ## User Preferences
 None documented yet.
 
-## Notes
-- The database is pre-populated with 1,186 scraped job listings
-- PostHog analytics is configured with project API key
-- File uploads are stored in `uploads/certifications/` directory
-- Maximum file upload size is 10MB per file
-- User-submitted jobs are visible for 24 hours, then automatically hidden (not deleted)
-- Job posting flow: Form → Validation → Insert with `submitted_at = NOW()` → Success modal preview
+## System Architecture
+
+### Tech Stack
+-   **Frontend:** Vanilla HTML/CSS/JavaScript
+-   **Backend:** Express.js API server
+-   **Database:** SQLite (using `better-sqlite3`)
+-   **Analytics:** PostHog (for user behavior)
+
+### Core System Design
+-   **Unified Server:** Express.js serves both static frontend assets and API endpoints on Port 5000.
+-   **Dual-Database System:**
+    -   `user_jobs.db`: Stores user-submitted job postings, persisting independently and featuring a `submitted_at` timestamp. These jobs can be hidden by admins.
+    -   `master_jobs.db`: Contains scraped job listings. This database can be refreshed without impacting user-submitted jobs. Scraped jobs have `submitted_at = NULL`.
+    -   Jobs from both databases are merged via SQL `UNION ALL` with `ATTACH DATABASE` for public display, ensuring user jobs appear first.
+-   **Data Storage:** User certification uploads are stored securely in `uploads/certifications/` and are not publicly accessible, requiring admin authentication for download.
+-   **Analytics System:** Custom event tracking (page visits, searches, filters, job clicks) is implemented using an `analytics_events` table in the master database, with session-based de-duplication.
+-   **Admin Portal:** A secure, password-protected Express.js session-based authentication system provides access to an admin dashboard for managing subscribers, submitted jobs, and analytics. Requires `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` environment variables.
+
+### Key Features
+-   **Advanced Search & Filtering:** Comprehensive search across job attributes, location (state/city), vehicle type, and certifications.
+-   **Job Alerts & Subscriptions:** Users can subscribe to job alerts and optionally upload certifications.
+-   **Job Posting Form:** Allows users to submit job listings, which are visible for 24 hours.
+-   **Admin Dashboard:** Provides tools for viewing subscribers, managing user-submitted jobs (including hide/unhide functionality), and accessing detailed analytics with time-series charts (e.g., clicks over time).
+-   **Responsive Design:** Optimized for mobile, tablet, and desktop experiences.
+-   **Infinite Scroll Pagination:** For efficient job browsing.
+
+### Database Schema (Shared)
+-   **jobs table:**
+    -   `id` (Primary Key)
+    -   `submitted_at` (Timestamp, NULL for scraped jobs)
+    -   `hidden` (Boolean, 0/1, for `user_jobs.db` only)
+    -   `job_url`, `title`, `company`, `city`, `state`, `address`, `description`, `pay`, `general_requirements`, `schedule_details`, `benefits`, `vehicle_requirements`, `insurance_requirement`.
+
+### Database Schema (Master Database Only)
+-   **subscribers:** Email subscriptions.
+-   **subscriber_certifications:** Certification files linked to subscribers.
+-   **analytics_events:** Stores event type, data, and session ID for tracking.
+
+### UI/UX Decisions
+-   Frontend built with vanilla HTML/CSS/JavaScript for performance and control.
+-   Responsive design principles applied for consistent experience across devices.
+-   Admin dashboard includes interactive charts (Chart.js) for visualizing analytics data.
+
+## External Dependencies
+-   **PostHog:** Integrated for user behavior analytics.
+-   **Chart.js:** Used for data visualization within the admin analytics dashboard.
+-   **SQLite (`better-sqlite3`):** Database engine for both `user_jobs.db` and `master_jobs.db`.
+-   **Express.js:** Web application framework for the backend API and serving static files.
