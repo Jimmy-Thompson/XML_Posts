@@ -694,9 +694,7 @@
 
             const location = [job.city, job.state].filter(Boolean).join(", ") || "-";
 
-            const pay = job.pay_min && job.pay_max
-              ? `$${job.pay_min} - $${job.pay_max}/${job.pay_frequency || "hr"}`
-              : "-";
+            const pay = job.pay || "-";
 
             const details = `
               <div class="job-details">
