@@ -483,6 +483,7 @@
                 <th>Details</th>
                 <th>Submitted</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="jobsBody"></tbody>
@@ -856,7 +857,9 @@
             const isActive = hoursSinceSubmitted < 24;
             
             let statusBadge = '';
-            if (isActive) {
+            if (job.hidden) {
+              statusBadge = `<span class="badge" style="background: #94a3b8; color: white;">Hidden</span>`;
+            } else if (isActive) {
               const hoursRemaining = 24 - hoursSinceSubmitted;
               const hours = Math.floor(hoursRemaining);
               const minutes = Math.floor((hoursRemaining - hours) * 60);
@@ -873,21 +876,48 @@
               statusBadge = `<span class="badge badge-expired">Expired</span>`;
             }
 
+            // Create hide/unhide button
+            const hideButtonText = job.hidden ? 'Unhide' : 'Hide';
+            const hideButtonStyle = job.hidden 
+              ? 'background: #10b981; color: white;' 
+              : 'background: #94a3b8; color: white;';
+
             row.innerHTML = `
               <td><strong>${job.title}</strong></td>
               <td>${job.company || "-"}</td>
               <td>${location}</td>
               <td>${pay}</td>
-              <td><span style="color: #667eea; cursor: pointer;">Click to view →</span></td>
+              <td><span style="color: #667eea; cursor: pointer;" class="view-details">Click to view →</span></td>
               <td>${date}</td>
               <td>${statusBadge}</td>
+              <td>
+                <button 
+                  class="hide-toggle-btn" 
+                  data-job-id="${job.id}"
+                  data-hidden="${job.hidden ? '1' : '0'}"
+                  style="padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; ${hideButtonStyle}"
+                >
+                  ${hideButtonText}
+                </button>
+              </td>
             `;
 
-            row.addEventListener("click", () => {
-              console.log("=== Row clicked! ===");
+            // Add click handler for view details (don't propagate to row)
+            const viewDetails = row.querySelector('.view-details');
+            viewDetails.addEventListener("click", (e) => {
+              e.stopPropagation();
+              console.log("=== View details clicked! ===");
               console.log("Job being passed to modal:", job);
               showJobModal(job);
             });
+
+            // Add click handler for hide/unhide button
+            const hideBtn = row.querySelector('.hide-toggle-btn');
+            hideBtn.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              await toggleJobVisibility(job.id, job.hidden);
+            });
+
             tbody.appendChild(row);
           });
 
