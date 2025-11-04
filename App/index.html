@@ -739,13 +739,24 @@
         }
 
         .nav {
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
+          gap: 12px;
+        }
+
+        .brand {
+          flex-shrink: 0;
         }
 
         .nav-links {
-          width: 100%;
-          justify-content: flex-start;
-          gap: 16px;
+          flex: 1;
+          justify-content: flex-end;
+          gap: 12px;
+          min-width: 0;
+        }
+
+        .nav-links a {
+          font-size: 0.85rem;
+          white-space: nowrap;
         }
 
         .hero {
