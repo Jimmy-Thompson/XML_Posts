@@ -2450,9 +2450,14 @@
 
         observer?.disconnect();
 
-        const observerOptions = jobsScrollArea
-          ? { root: jobsScrollArea, rootMargin: "0px 0px 200px 0px" }
-          : { root: null, rootMargin: "0px 0px 200px 0px" };
+        // Check if we're on mobile (no max-height on scroll area)
+        const isMobile = window.innerWidth <= 768;
+        
+        // On mobile, use viewport (root: null) for scrolling detection
+        // On desktop, use the scroll area container
+        const observerOptions = isMobile
+          ? { root: null, rootMargin: "0px 0px 200px 0px" }
+          : { root: jobsScrollArea, rootMargin: "0px 0px 200px 0px" };
 
         observer = new IntersectionObserver((entries) => {
           const [entry] = entries;
@@ -2465,6 +2470,15 @@
 
         observer.observe(jobsSentinel);
       }
+
+      // Re-setup observer on window resize to handle mobile/desktop transitions
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          setupIntersectionObserver();
+        }, 250);
+      });
 
       // Update Fuse.js index with loaded jobs
       function updateFuseIndex() {
