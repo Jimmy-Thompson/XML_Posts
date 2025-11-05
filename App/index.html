@@ -1961,19 +1961,32 @@
 
       // Certifications data
       const selectedCertifications = [];
-      const pastelColors = [
-        "#FFE5E5", // light pink
-        "#E5F3FF", // light blue
-        "#E5FFE5", // light green
-        "#FFE5FF", // light purple
-        "#FFF5E5", // light orange
-        "#FFFFE5", // light yellow
-        "#E5FFFF", // light cyan
-        "#F5E5FF", // light lavender
-        "#FFE5EC", // light peach
-        "#E5FFF5", // light mint
-      ];
-      let colorIndex = 0;
+      
+      // Consistent color mapping for certifications
+      const certificationColors = {
+        'HIPAA': { bg: '#E8D5F2', text: '#6B3FA0' },      // Soft lavender (medical/health)
+        'BPP': { bg: '#D5E8F7', text: '#2E5C8A' },        // Light blue (professional)
+        'TWIC': { bg: '#D5F2E8', text: '#2E8A6B' },       // Soft teal (maritime/security)
+        'TSA': { bg: '#FFE5CC', text: '#CC7A29' },        // Light orange (aviation)
+        'STA': { bg: '#D5F7E8', text: '#2E8A5C' },        // Soft green (aviation/security)
+        'HAZMAT': { bg: '#FFD5D5', text: '#CC4040' }      // Light coral (caution/safety)
+      };
+      
+      // Consistent color mapping for vehicle types
+      const vehicleColors = {
+        'Car': { bg: '#E3F2FD', text: '#1565C0' },        // Light blue
+        'Van': { bg: '#F3E5F5', text: '#7B1FA2' },        // Light purple
+        'Truck': { bg: '#FFF3E0', text: '#E65100' },      // Light orange
+        'SUV': { bg: '#E8F5E9', text: '#2E7D32' },        // Light green
+        'Bike': { bg: '#FCE4EC', text: '#C2185B' },       // Light pink
+        'Motorcycle': { bg: '#FFF9C4', text: '#F57F17' }, // Light yellow
+        'Box Truck': { bg: '#FFECB3', text: '#FF6F00' },  // Light amber
+        'Cargo Van': { bg: '#E1BEE7', text: '#6A1B9A' },  // Light deep purple
+        'Sprinter Van': { bg: '#D1C4E9', text: '#512DA8' } // Light indigo
+      };
+      
+      // Fallback colors for unknown types
+      const defaultTagColor = { bg: '#F5F5F5', text: '#616161' };
 
       function setSearchLoading(isSearching) {
         if (!searchButton) {
