@@ -774,6 +774,7 @@
                     (cert) => `
                   <li class="cert-item">
                     <span class="badge badge-primary">${cert.certification_type}</span>
+                    <a href="/api/admin/view/${cert.id}" target="_blank" class="download-btn" style="background: #10b981; margin-right: 4px;">View</a>
                     <a href="/api/admin/download/${cert.id}" class="download-btn">Download</a>
                   </li>
                 `

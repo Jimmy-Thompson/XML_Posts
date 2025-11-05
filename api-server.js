@@ -1038,6 +1038,47 @@ app.get('/api/admin/download/:certId', requireAdmin, (req, res) => {
   }
 });
 
+// Protected: View certification file in browser
+app.get('/api/admin/view/:certId', requireAdmin, (req, res) => {
+  const { certId } = req.params;
+  const db = getDb();
+
+  try {
+    const cert = db.prepare(`
+      SELECT file_path, file_name, mime_type
+      FROM subscriber_certifications
+      WHERE id = ?
+    `).get(certId);
+
+    if (!cert) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certification file not found'
+      });
+    }
+
+    const filePath = path.join(__dirname, cert.file_path);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'File not found on server'
+      });
+    }
+
+    // Use 'inline' instead of 'attachment' to display in browser
+    res.setHeader('Content-Disposition', `inline; filename="${cert.file_name}"`);
+    res.setHeader('Content-Type', cert.mime_type);
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error viewing file:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to view file'
+    });
+  }
+});
+
 // Initialize user jobs database with schema
 function initializeUserJobsDb() {
   const userDb = getUserDb();
