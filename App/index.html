@@ -2158,11 +2158,11 @@
         tag.className = "cert-tag";
         tag.dataset.cert = cert;
 
-        // Get pastel color
-        const color = pastelColors[colorIndex % pastelColors.length];
-        colorIndex++;
-        tag.style.backgroundColor = color;
-        tag.style.color = "#333";
+        // Get colors from color map
+        const colors = certificationColors[cert] || defaultTagColor;
+        tag.style.backgroundColor = colors.bg;
+        tag.style.color = colors.text;
+        tag.style.fontWeight = "600";
 
         // Tag content
         tag.innerHTML = `
