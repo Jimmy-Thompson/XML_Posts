@@ -5,6 +5,7 @@ GigSafe Job Board is a specialized job aggregator for delivery driver and logist
 
 ## Recent Changes (November 5, 2025)
 -   **Certification Requirements Feature:** Added support for filtering jobs by required certifications (HIPAA, BPP, TWIC, TSA, STA, HAZMAT). Jobs now display certification badges with purple gradient styling on job cards for easy identification.
+-   **Auto-Trigger Search:** Implemented instant search filtering - selecting or removing a certification automatically triggers job search without requiring a manual "Search Jobs" button click for improved UX.
 -   **Database Schema Update:** Added `certifications_required` column to both `master_jobs.db` and `user_jobs.db` to store comma-separated certification requirements.
 -   **Enhanced Filtering:** Updated the certifications filter to search the dedicated `certifications_required` field instead of generic description/benefits fields for more accurate results.
 -   **Database Refresh:** Imported new master database with 1,186 jobs, 18 of which have specific certification requirements.

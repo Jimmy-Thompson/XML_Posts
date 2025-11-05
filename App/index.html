@@ -2204,6 +2204,9 @@
         if (selectedCertifications.length === 0 && certificationsContainer) {
           certificationsContainer.style.display = "none";
         }
+
+        // Auto-trigger search when certification is removed
+        fetchJobs(1);
       }
 
       // Handle certification selection
@@ -2212,6 +2215,8 @@
           const cert = e.target.value;
           if (cert) {
             addCertification(cert);
+            // Auto-trigger search when certification is selected
+            fetchJobs(1);
           }
         });
       }
