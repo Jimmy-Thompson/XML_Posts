@@ -497,7 +497,7 @@
       }
 
       .testimonial-card::before {
-        content: """;
+        content: '"';
         position: absolute;
         top: 18px;
         right: 28px;
@@ -2487,7 +2487,7 @@
         };
 
         // Apply gold styling and sash if user-submitted
-        if (job.is_user_submitted) {
+        if (job.submitted_at) {
           card.classList.add("job-item--user-submitted"); // Add a class for potential future styling
           card.dataset.userSubmitted = "true"; // Add a data attribute for CSS targeting
         }

@@ -3,7 +3,13 @@
 ## Overview
 GigSafe Job Board is a specialized job aggregator for delivery driver and logistics positions, featuring over 1,186 jobs from 10 major companies including Amazon DSP, Airspace, and GoPuff. Its primary purpose is to help delivery drivers and logistics workers efficiently find relevant job opportunities through advanced search, filtering capabilities, and a user-friendly interface. The project aims to be the go-to platform for logistics employment, offering both scraped and user-submitted job listings.
 
-## Recent Changes (November 5, 2025)
+## Recent Changes
+
+### November 7, 2025
+-   **Gold Sash Fix:** Fixed the gold corner sash/banner that appears on user-submitted job tiles. The frontend was checking for `job.is_user_submitted` but the API returns `job.submitted_at`, causing the sash to never appear. Updated the condition to check for `job.submitted_at` instead.
+-   **CSS Error Fix:** Corrected CSS syntax error in testimonial card pseudo-element where a curly quote character was used instead of a straight quote, which was causing LSP parsing errors.
+
+### November 5, 2025
 -   **Certification Requirements Feature:** Added support for filtering jobs by required certifications (HIPAA, BPP, TWIC, TSA, STA, HAZMAT). Jobs now display certification badges with consistent color-coded styling on job cards for easy identification.
 -   **Consistent Color-Coded Tags:** Implemented visual color mapping system where each certification and vehicle type gets a specific, consistent color across all job listings. For example, HIPAA is always soft lavender, TSA is always light orange. This enables quick visual scanning without reading every tag.
 -   **Auto-Trigger Search:** Implemented instant search filtering - selecting or removing a certification automatically triggers job search without requiring a manual "Search Jobs" button click for improved UX.
@@ -35,6 +41,7 @@ None documented yet.
 ### Key Features
 -   **Advanced Search & Filtering:** Comprehensive search across job attributes, location (state/city), vehicle type, and certifications. The certifications filter searches the `certifications_required` field and supports 6 certification types: HIPAA, BPP, TWIC, TSA, STA, and HAZMAT.
 -   **Certification Badges:** Jobs with certification requirements display purple gradient badges on job cards for easy visual identification.
+-   **Gold Sash Visual Indicator:** User-submitted jobs (uploaded through the job posting form) display a distinctive gold corner sash in the top-left of job cards to differentiate them from scraped job listings.
 -   **Job Alerts & Subscriptions:** Users can subscribe to job alerts and optionally upload certifications.
 -   **Job Posting Form:** Allows users to submit job listings with optional certification requirements, which are visible for 24 hours.
 -   **Admin Dashboard:** Provides tools for viewing subscribers, managing user-submitted jobs (including hide/unhide functionality), and accessing detailed analytics with time-series charts (e.g., clicks over time).
