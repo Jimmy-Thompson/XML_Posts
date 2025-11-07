@@ -14,7 +14,7 @@
     <style>
       :root {
         --purple: #4B238C;
-        --black: #14141E;
+        --black: #000000;
         --violet: #5B3A9D;
         --indigo: #1f2b6c;
         --navy: #0f193b;
@@ -113,7 +113,7 @@
       }
 
       .hero {
-        background: linear-gradient(135deg, rgba(75, 35, 140, 0.98), rgba(20, 20, 30, 0.95));
+        background: linear-gradient(135deg, rgba(75, 35, 140, 0.98) 0%, rgba(75, 35, 140, 0.98) 75%, rgba(0, 0, 0, 0.95) 100%);
         color: white;
         padding: 60px 4vw;
         text-align: center;
@@ -255,7 +255,7 @@
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, var(--purple), var(--black));
+        background: linear-gradient(135deg, var(--purple) 0%, var(--purple) 75%, var(--black) 100%);
         color: white;
         box-shadow: 0 16px 30px rgba(75, 35, 140, 0.4);
       }

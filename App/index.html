@@ -77,7 +77,7 @@
     <style>
       :root {
         --purple: #4B238C;
-        --black: #14141E;
+        --black: #000000;
         --violet: #5B3A9D;
         --indigo: #1f2b6c;
         --navy: #0f193b;
@@ -176,7 +176,7 @@
 
       .hero {
         background: radial-gradient(circle at top left, rgba(75, 35, 140, 0.4), transparent 55%),
-          linear-gradient(135deg, rgba(75, 35, 140, 0.98), rgba(20, 20, 30, 0.95));
+          linear-gradient(135deg, rgba(75, 35, 140, 0.98) 0%, rgba(75, 35, 140, 0.98) 75%, rgba(0, 0, 0, 0.95) 100%);
         color: white;
         padding: 60px 4vw 96px;
         position: relative;
@@ -303,7 +303,7 @@
         font-size: 1rem;
         font-weight: 700;
         color: white;
-        background: linear-gradient(135deg, var(--purple), var(--black));
+        background: linear-gradient(135deg, var(--purple) 0%, var(--purple) 75%, var(--black) 100%);
         cursor: pointer;
         box-shadow: 0 16px 30px rgba(75, 35, 140, 0.4);
         transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
@@ -589,7 +589,7 @@
       }
 
       .cta-band {
-        background: linear-gradient(135deg, var(--purple), var(--black));
+        background: linear-gradient(135deg, var(--purple) 0%, var(--purple) 75%, var(--black) 100%);
         color: white;
         padding: 72px 4vw;
         position: relative;
@@ -1153,7 +1153,7 @@
         font-size: 0.95rem;
         font-weight: 700;
         color: white;
-        background: linear-gradient(135deg, var(--purple), var(--black));
+        background: linear-gradient(135deg, var(--purple) 0%, var(--purple) 75%, var(--black) 100%);
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(75, 35, 140, 0.35);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1342,7 +1342,7 @@
         font-size: 1rem;
         font-weight: 700;
         color: white;
-        background: linear-gradient(135deg, var(--purple), var(--black));
+        background: linear-gradient(135deg, var(--purple) 0%, var(--purple) 75%, var(--black) 100%);
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(75, 35, 140, 0.35);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
