@@ -1517,6 +1517,22 @@
         color: #dc2626;
         margin-left: 2px;
       }
+
+      /* Desktop-only search section title */
+      .search-section-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 32px;
+        letter-spacing: -0.02em;
+      }
+
+      @media (max-width: 768px) {
+        .search-section-title {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1542,6 +1558,7 @@
       <main>
         <section class="hero">
           <div class="hero-content">
+            <h1 class="search-section-title">Master List of Public Job Boards</h1>
             <div class="search-card">
               <div class="search-group">
                 <label class="search-label" for="keyword">Keyword</label>
