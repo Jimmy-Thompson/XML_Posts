@@ -108,7 +108,12 @@ app.use(helmet({
 // CORS Configuration - Restrict to your actual domains
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ['http://localhost:5000', 'http://localhost:8000'];
+  : [
+      'http://localhost:5000', 
+      'http://localhost:8000',
+      'http://127.0.0.1:5000',
+      'http://127.0.0.1:8000'
+    ];
 
 // In production, add your actual domain
 if (process.env.REPLIT_DEPLOYMENT === '1' && process.env.REPLIT_DOMAINS) {
@@ -135,8 +140,17 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' })); // Limit request body size
 
-// Trust proxy for accurate IP addresses behind reverse proxy
-app.set('trust proxy', 1);
+// Trust proxy configuration for Replit environment
+// Replit always sets X-Forwarded-For, so we need to trust proxy on Replit
+// In true local development (not on Replit), trust proxy should be disabled
+const isReplit = process.env.REPL_ID || process.env.REPLIT_DEPLOYMENT === '1';
+if (isReplit || process.env.NODE_ENV === 'production') {
+  // Trust proxy on Replit or in production - proxy handles X-Forwarded-For correctly
+  app.set('trust proxy', 1);
+  console.log('Trust proxy enabled (Replit/Production environment)');
+} else {
+  console.log('Trust proxy disabled (local development)');
+}
 
 // Rate Limiters
 const generalLimiter = rateLimit({
