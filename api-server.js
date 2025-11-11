@@ -1295,10 +1295,10 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
       LIMIT 30
     `).all();
 
-    // Most clicked jobs (including legacy events without job_id)
+    // Most clicked jobs (prefer events with job_id when available)
     const mostClickedJobs = db.prepare(`
       SELECT 
-        json_extract(event_data, '$.job_id') as job_id,
+        MAX(json_extract(event_data, '$.job_id')) as job_id,
         json_extract(event_data, '$.title') as job_title,
         json_extract(event_data, '$.company') as company,
         json_extract(event_data, '$.location') as location,
