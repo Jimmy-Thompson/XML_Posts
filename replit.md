@@ -5,11 +5,15 @@ GigSafe Job Board is a specialized job aggregator for delivery driver and logist
 
 ## Recent Changes
 
+### November 11, 2025
+-   **CORS Development Fix:** Updated CORS middleware to allow `*.replit.dev` URLs in development mode (when `REPL_ID` is set but not deployed). Production deployments still enforce strict CORS with approved domains only. This enables admin access during development while maintaining production security.
+-   **Session Cookie Security Enhancement:** Admin session cookies now automatically use secure flag (HTTPS-only) when running on Replit (detects `REPLIT_DEPLOYMENT` or `REPL_ID`), preventing session hijacking without requiring manual `NODE_ENV=production` configuration.
+
 ### November 10, 2025
 -   **Production Security Hardening:** Implemented comprehensive security improvements for production launch:
     -   **Database Protection:** Added `outputs/` directory to `.gitignore` to prevent accidental commit of sensitive data (sessions.db, user_jobs.db, master_jobs.db)
     -   **Password Validation:** Added startup validation requiring minimum 8 characters for ADMIN_PASSWORD environment variable
-    -   **CORS Configuration:** Implemented custom CORS middleware applied only to `/api/*` routes. Validates Origin header when present against allowlist, allows same-origin requests without Origin header (browser standard behavior). Relies on rate limiting, authentication, and input validation for comprehensive security.
+    -   **CORS Configuration:** Implemented custom CORS middleware applied only to `/api/*` routes. Validates Origin header when present against allowlist, allows same-origin requests without Origin header (browser standard behavior). Production deployments enforce strict domain validation. Development mode allows `*.replit.dev` URLs.
     -   **Security Logging:** All CORS violations and suspicious activity logged to `logs/security.log`
 
 ### November 7, 2025

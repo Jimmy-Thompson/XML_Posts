@@ -131,11 +131,29 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'http://127.0.0.1:8000'
     ];
 
-// In production, add your actual domain
+// In production deployment, add your actual domain
 if (process.env.REPLIT_DEPLOYMENT === '1' && process.env.REPLIT_DOMAINS) {
   const replitDomains = process.env.REPLIT_DOMAINS.split(',').map(d => `https://${d}`);
   allowedOrigins.push(...replitDomains);
 }
+
+// Helper function to check if origin is allowed
+const isOriginAllowed = (origin) => {
+  // Check explicit allowlist
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+  
+  // In development on Replit (not deployed), allow all *.replit.dev URLs
+  // This is safe because: 1) only for dev, 2) rate limiting still active, 3) auth still required
+  if (process.env.REPL_ID && !process.env.REPLIT_DEPLOYMENT) {
+    if (origin && origin.match(/^https:\/\/.*\.replit\.dev$/)) {
+      return true;
+    }
+  }
+  
+  return false;
+};
 
 // CORS middleware for API routes only - balanced security
 const apiCorsMiddleware = (req, res, next) => {
@@ -143,7 +161,7 @@ const apiCorsMiddleware = (req, res, next) => {
   
   // If origin header is present, validate it
   if (origin) {
-    if (allowedOrigins.indexOf(origin) === -1 && !allowedOrigins.includes('*')) {
+    if (!isOriginAllowed(origin)) {
       logSecurityEvent('CORS_BLOCKED', { origin });
       return res.status(403).json({ 
         success: false, 
