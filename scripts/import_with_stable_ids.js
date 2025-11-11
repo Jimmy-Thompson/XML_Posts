@@ -61,7 +61,8 @@ function importJobsWithStableIds(jsonFilePath, dbPath) {
       certifications_required TEXT,
       schedule_details TEXT,
       source_company TEXT,
-      scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      submitted_at TIMESTAMP DEFAULT NULL
     );
     
     CREATE INDEX idx_jobs_city_state ON jobs(city, state);
