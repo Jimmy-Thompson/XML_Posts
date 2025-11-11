@@ -1152,16 +1152,25 @@
             if (clicksToShow.length > 0) {
               clicksToShow.forEach((click) => {
                 const row = document.createElement("tr");
-                row.style.cursor = "pointer";
-                row.style.transition = "background-color 0.2s";
-                row.onmouseenter = () => row.style.backgroundColor = "#f5f5f5";
-                row.onmouseleave = () => row.style.backgroundColor = "";
-                row.onclick = () => openJobAnalyticsModal(click.jobId, click.title, click.company, click.location);
+                const hasJobId = click.jobId !== null && click.jobId !== undefined;
+                
+                if (hasJobId) {
+                  row.style.cursor = "pointer";
+                  row.style.transition = "background-color 0.2s";
+                  row.onmouseenter = () => row.style.backgroundColor = "#f5f5f5";
+                  row.onmouseleave = () => row.style.backgroundColor = "";
+                  row.onclick = () => openJobAnalyticsModal(click.jobId, click.title, click.company, click.location);
+                  row.title = "Click to view detailed analytics";
+                } else {
+                  row.style.opacity = "0.6";
+                  row.title = "Legacy data - detailed analytics not available";
+                }
+                
                 row.innerHTML = `
                   <td><strong>${click.title}</strong></td>
                   <td>${click.company}</td>
                   <td>${click.location}</td>
-                  <td>${click.count}</td>
+                  <td>${click.count}${hasJobId ? '' : ' *'}</td>
                 `;
                 clicksBody.appendChild(row);
               });

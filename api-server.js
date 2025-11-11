@@ -1295,7 +1295,7 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
       LIMIT 30
     `).all();
 
-    // Most clicked jobs
+    // Most clicked jobs (including legacy events without job_id)
     const mostClickedJobs = db.prepare(`
       SELECT 
         json_extract(event_data, '$.job_id') as job_id,
@@ -1305,8 +1305,7 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
         COUNT(*) as clicks
       FROM analytics_events
       WHERE event_type = 'job_click'
-      AND json_extract(event_data, '$.job_id') IS NOT NULL
-      GROUP BY job_id, job_title, company, location
+      GROUP BY job_title, company, location
       ORDER BY clicks DESC
       LIMIT 20
     `).all();
