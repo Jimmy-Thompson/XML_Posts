@@ -1305,6 +1305,7 @@ app.get('/api/admin/analytics', requireAdmin, (req, res) => {
         COUNT(*) as clicks
       FROM analytics_events
       WHERE event_type = 'job_click'
+      AND json_extract(event_data, '$.jobId') IS NOT NULL
       GROUP BY job_id, job_title, company, location
       ORDER BY clicks DESC
       LIMIT 20
