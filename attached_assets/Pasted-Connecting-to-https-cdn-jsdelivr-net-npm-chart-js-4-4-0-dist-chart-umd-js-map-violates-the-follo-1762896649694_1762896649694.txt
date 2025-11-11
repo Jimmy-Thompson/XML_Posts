@@ -1,0 +1,39 @@
+Connecting to 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js.map' violates the following Content Security Policy directive: "connect-src 'self' https://us.i.posthog.com". The request has been blocked.
+Understand this error
+admin.html:1737 Setting up modal close handlers...
+admin.html:1739 Close button element: <button class=​"modal-close" id=​"closeModal">​×​</button>​flex
+admin.html:1743 Close button click handler attached
+admin.html:1749 Modal overlay element: <div id=​"jobModal" class=​"modal-overlay">​…​</div>​
+admin.html:1758 Modal overlay click handler attached
+admin.html:897 === loadJobs() called ===
+admin.html:901 Jobs data received: {success: true, count: 3, jobs: Array(3)}
+admin.html:913 Processing 3 jobs
+admin.html:914 First job data: {id: 4, job_url: 'https://example.com/test-job', title: 'Test Gold Sash Job', company: 'Test Company', city: 'San Francisco', …}
+admin.html:1007 All rows created and event listeners attached
+admin.html:1048 === loadAnalytics() called with timeRange: all ===
+admin.html:1052 Analytics data received: {success: true, stats: {…}}
+admin.html:1150 🔵 renderJobClicksTable called with 12 clicks
+admin.html:1158 Row 0: {title: 'Delivery Driver - Amazon DSP', jobId: null, hasJobId: false}
+admin.html:1182 Row 0 has NO jobId - not clickable
+admin.html:1158 Row 1: {title: 'Driver Contractor Philadelphia', jobId: null, hasJobId: false}
+admin.html:1182 Row 1 has NO jobId - not clickable
+admin.html:1158 Row 2: {title: 'Jimmy Box Truck Delivery', jobId: null, hasJobId: false}
+admin.html:1182 Row 2 has NO jobId - not clickable
+admin.html:1158 Row 3: {title: 'Package Handler', jobId: null, hasJobId: false}
+admin.html:1182 Row 3 has NO jobId - not clickable
+admin.html:1158 Row 4: {title: 'Catering Delivery Driver', jobId: null, hasJobId: false}
+admin.html:1182 Row 4 has NO jobId - not clickable
+admin.html:1158 Row 5: {title: 'Courier', jobId: null, hasJobId: false}
+admin.html:1182 Row 5 has NO jobId - not clickable
+admin.html:1158 Row 6: {title: 'Delivery Driver- Delco Deadline Deliveries, LLC', jobId: null, hasJobId: false}
+admin.html:1182 Row 6 has NO jobId - not clickable
+admin.html:1158 Row 7: {title: 'Delivery Driver/Courier', jobId: null, hasJobId: false}
+admin.html:1182 Row 7 has NO jobId - not clickable
+admin.html:1158 Row 8: {title: 'Driver Contractor', jobId: null, hasJobId: false}
+admin.html:1182 Row 8 has NO jobId - not clickable
+admin.html:1158 Row 9: {title: 'Operation Manager', jobId: null, hasJobId: false}
+admin.html:1182 Row 9 has NO jobId - not clickable
+admin.html:1158 Row 10: {title: 'Pharmaceutical Delivery Driver (West Allis, WI) SDS-Rx', jobId: null, hasJobId: false}
+admin.html:1182 Row 10 has NO jobId - not clickable
+admin.html:1158 Row 11: {title: 'Test Gold Sash Job', jobId: null, hasJobId: false}
+admin.html:1182 Row 11 has NO jobId - not clickable
