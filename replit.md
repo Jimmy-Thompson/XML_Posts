@@ -1,11 +1,23 @@
 # GigSafe Job Board
 
 ## Overview
-GigSafe Job Board is a specialized job aggregator for delivery driver and logistics positions, featuring over 1,186 jobs from 10 major companies including Amazon DSP, Airspace, and GoPuff. Its primary purpose is to help delivery drivers and logistics workers efficiently find relevant job opportunities through advanced search, filtering capabilities, and a user-friendly interface. The project aims to be the go-to platform for logistics employment, offering both scraped and user-submitted job listings.
+GigSafe Job Board is a specialized job aggregator for delivery driver and logistics positions, featuring over 2,766 jobs from multiple companies including Amazon DSP, Airspace, and GoPuff. Its primary purpose is to help delivery drivers and logistics workers efficiently find relevant job opportunities through advanced search, filtering capabilities, and a user-friendly interface. The project aims to be the go-to platform for logistics employment, offering both scraped and user-submitted job listings.
 
 ## Recent Changes
 
 ### November 11, 2025
+-   **Stable Hash-Based Job IDs:** Implemented production-ready database import system using MD5 hash-based stable IDs:
+    -   **ID Generation:** Job IDs are now 10-character hex strings (e.g., `37fa105c2e`) derived from MD5 hash of `job_url`, ensuring same job always gets same ID across imports
+    -   **Analytics Preservation:** Stable IDs allow analytics (clicks, impressions, CTR) to persist across database refreshes without orphaned data
+    -   **Import Scripts:** Created automated import pipeline in `scripts/` directory:
+        - `import_with_stable_ids.js`: Main import script with transaction-based batch processing, data validation, duplicate detection
+        - `backup_analytics.js`: Backs up subscribers, certifications, and non-job analytics events
+        - `restore_analytics.js`: Restores analytics infrastructure to newly imported database
+        - `verify_database.js`: Validates database integrity and ID format consistency
+        - `test_id_stability.js`: Confirms IDs regenerate consistently from URLs
+    -   **Production Import:** Successfully imported 2,766 jobs (up from 1,186) with stable IDs, skipped 190 invalid jobs missing required fields
+    -   **Clean Analytics Start:** Cleared job_click and job_impression events for fresh production baseline while preserving subscriber/certification data
+    -   **Import Workflow:** Standard procedure is: backup → import → restore → verify → restart
 -   **Individual Job Analytics Dashboard:** Implemented comprehensive drill-down analytics feature for admin portal:
     -   **Search & Filter:** Added real-time search box above Popular Job Clicks table to filter by job title, company, or location
     -   **Click-to-Analyze:** Made all job rows clickable to open detailed analytics modal
@@ -69,11 +81,11 @@ None documented yet.
 
 ### Database Schema (Shared)
 -   **jobs table:**
-    -   `id` (Primary Key)
-    -   `submitted_at` (Timestamp, NULL for scraped jobs)
+    -   `id` (Primary Key, TEXT - 10-character hex hash derived from job_url for stability across imports)
+    -   `submitted_at` (Timestamp, NULL for scraped jobs, NOT NULL for user-submitted jobs)
     -   `hidden` (Boolean, 0/1, for `user_jobs.db` only)
     -   `certifications_required` (TEXT, comma-separated list of required certifications: HIPAA, BPP, TWIC, TSA, STA, HAZMAT)
-    -   `job_url`, `title`, `company`, `city`, `state`, `address`, `description`, `pay`, `general_requirements`, `schedule_details`, `benefits`, `vehicle_requirements`, `insurance_requirement`.
+    -   `job_url`, `title`, `company`, `city`, `state`, `address`, `description`, `pay`, `general_requirements`, `schedule_details`, `benefits`, `vehicle_requirements`, `insurance_requirement`, `source_company`, `scraped_at`.
 
 ### Database Schema (Master Database Only)
 -   **subscribers:** Email subscriptions.
