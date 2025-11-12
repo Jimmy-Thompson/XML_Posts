@@ -5,6 +5,21 @@ GigSafe Job Board is a specialized job aggregator for delivery driver and logist
 
 ## Recent Changes
 
+### November 12, 2025
+-   **Smart Vehicle Filter Fix:** Fixed "Cargo/Sprinter Van" filter that was returning 0 results due to logic error:
+    -   **Problem:** Dropdown showed "Cargo/Sprinter Van" but database contains separate "Cargo Van" and "Sprinter Van" entries
+    -   **Solution:** Implemented smart filter logic - when "Cargo/Sprinter Van" is selected, API searches for jobs with either "Cargo Van" OR "Sprinter Van"
+    -   **Results:** Filter now returns 140 total jobs (113 Cargo Van, 5 Sprinter Van, plus combo variants)
+    -   **Consistency:** Same smart filter approach as Box Truck (which matches Box Truck + Straight Truck)
+-   **Vehicle Filter Updates:**
+    -   **Renamed:** "Bicycle" → "Bike" for cleaner UX
+    -   **Added:** "Foot" as new vehicle type for walking courier jobs
+    -   **Reordered:** Bike is now second to last, Foot is last in dropdown
+-   **Smart Box Truck Filter:** Enhanced Box Truck filter to include WARP Freight straight truck jobs:
+    -   **Filter Logic:** When user selects "Box Truck", API matches both "Box Truck" AND "Straight Truck"
+    -   **Results:** Returns 706 total jobs (656 WARP Straight Truck + 50 Box Truck variants)
+    -   **Case-Insensitive:** Works with any capitalization for better matching
+
 ### November 11, 2025
 -   **WARP Freight Vehicle Requirements:** Enhanced WARP job listings with proper vehicle type filtering:
     -   **Data Population:** All 723 WARP Freight jobs now have `vehicle_requirements` field populated (previously stored only in job titles)

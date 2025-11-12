@@ -430,7 +430,13 @@ function buildWhereClause(filters, params) {
     if (filters.vehicle === 'Box Truck') {
       whereConditions.push('(vehicle_requirements LIKE ? COLLATE NOCASE OR vehicle_requirements LIKE ? COLLATE NOCASE)');
       params.push('%Box Truck%', '%Straight Truck%');
-    } else {
+    } 
+    // Special handling for Cargo/Sprinter Van to match both Cargo Van and Sprinter Van
+    else if (filters.vehicle === 'Cargo/Sprinter Van') {
+      whereConditions.push('(vehicle_requirements LIKE ? COLLATE NOCASE OR vehicle_requirements LIKE ? COLLATE NOCASE)');
+      params.push('%Cargo Van%', '%Sprinter Van%');
+    } 
+    else {
       whereConditions.push('vehicle_requirements LIKE ? COLLATE NOCASE');
       params.push(`%${filters.vehicle}%`);
     }
