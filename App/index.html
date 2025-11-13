@@ -1559,14 +1559,13 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding: 24px 16px;
-        background-color: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
-        margin-top: 48px;
+        padding: 16px;
+        background-color: transparent;
+        margin: 0;
       }
 
       .developer-text {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: var(--text-secondary);
         font-weight: 400;
       }
@@ -1586,24 +1585,47 @@
       }
 
       .linkedin-icon {
-        width: 20px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
       }
 
-      @media (max-width: 480px) {
+      /* Desktop: Position footer at bottom of page */
+      @media (min-width: 769px) {
         .developer-footer {
-          flex-direction: column;
-          gap: 4px;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background-color: var(--bg-secondary);
+          border-top: 1px solid var(--border-color);
           padding: 20px 16px;
+          z-index: 10;
         }
 
         .developer-text {
-          font-size: 0.8rem;
+          font-size: 0.875rem;
         }
 
         .linkedin-icon {
-          width: 18px;
-          height: 18px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      /* Mobile: Keep footer in natural position (between search and jobs) */
+      @media (max-width: 768px) {
+        .developer-footer {
+          padding: 12px 16px;
+          gap: 6px;
+        }
+
+        .developer-text {
+          font-size: 0.7rem;
+        }
+
+        .linkedin-icon {
+          width: 14px;
+          height: 14px;
         }
       }
     </style>
@@ -1757,6 +1779,20 @@
             </div>
           </div>
         </section>
+
+        <!-- Developer Credit Footer (Mobile Position) -->
+        <footer class="developer-footer">
+          <span class="developer-text">Developed by: Jimmy Thompson</span>
+          <a href="https://www.linkedin.com/in/jimmy-thompson-173911134/" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="linkedin-link"
+             aria-label="Jimmy Thompson's LinkedIn Profile">
+            <svg class="linkedin-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
+            </svg>
+          </a>
+        </footer>
 
         <!-- Jobs Listing Section -->
         <section class="jobs-section">
@@ -1960,20 +1996,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Developer Credit Footer -->
-    <footer class="developer-footer">
-      <span class="developer-text">Developed by: Jimmy Thompson</span>
-      <a href="https://www.linkedin.com/in/jimmy-thompson-173911134/" 
-         target="_blank" 
-         rel="noopener noreferrer" 
-         class="linkedin-link"
-         aria-label="Jimmy Thompson's LinkedIn Profile">
-        <svg class="linkedin-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
-        </svg>
-      </a>
-    </footer>
 
     <!-- Fuse.js for fuzzy search -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
