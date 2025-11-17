@@ -5,6 +5,15 @@ GigSafe Job Board is a specialized job aggregator for delivery driver and logist
 
 ## Recent Changes
 
+### November 17, 2025
+-   **Auto-Scroll to Results:** Implemented smooth auto-scroll behavior when users click "Search Jobs" button:
+    -   **UX Improvement:** After applying filters and clicking "Search Jobs", the page now automatically scrolls to show the job results, eliminating user confusion
+    -   **Smart Triggering:** Auto-scroll only activates on explicit "Search Jobs" button clicks or Enter key presses, not on auto-triggered searches (certification add/remove)
+    -   **Smooth Animation:** Uses native `scrollIntoView()` with smooth behavior for polished transitions
+    -   **Header Offset:** Added `scroll-margin-top: 80px` to `.jobs-container` to prevent sticky header from covering results
+    -   **Scroll Reset:** Resets internal scroll position to top of job list container for each new search
+    -   **No Interference:** Designed to avoid conflicts with infinite scroll pagination
+
 ### November 12, 2025
 -   **Smart Vehicle Filter Fix:** Fixed "Cargo/Sprinter Van" filter that was returning 0 results due to logic error:
     -   **Problem:** Dropdown showed "Cargo/Sprinter Van" but database contains separate "Cargo Van" and "Sprinter Van" entries
