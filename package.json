@@ -15,7 +15,7 @@
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "bottleneck": "^2.19.5",
-    "connect-sqlite3": "^0.9.16",
+    "better-sqlite3-session-store": "^0.1.0",
     "cors": "^2.8.5",
     "dompurify": "^3.3.0",
     "dotenv": "^17.2.3",

@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
-import sqliteStoreFactory from 'connect-sqlite3';
+import BetterSqlite3Store from 'better-sqlite3-session-store';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
@@ -277,7 +277,7 @@ if (adminPassword.length < 8) {
   process.exit(1);
 }
 
-const SQLiteStore = sqliteStoreFactory(session);
+const SQLiteStore = BetterSqlite3Store(session);
 
 // Determine if we should use secure cookies (HTTPS only)
 // Secure cookies on Replit deployment OR when NODE_ENV=production
