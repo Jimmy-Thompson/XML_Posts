@@ -4,14 +4,15 @@
   "description": "Job board aggregator for delivery driver and logistics positions",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"npm run api\" \"npm run dev\" --names \"API,WEB\" --prefix-colors \"blue,magenta\"",
-    "dev": "http-server App -p 8000 -o /landing.html",
+    "start": "node api-server.js",
+    "dev": "http-server App -p 8000 -a 0.0.0.0 -o /landing.html --cors",
     "api": "node api-server.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "multer": "^2.0.2"
   },
   "devDependencies": {
