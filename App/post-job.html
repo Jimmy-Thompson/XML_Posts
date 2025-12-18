@@ -12,6 +12,7 @@
       rel="stylesheet"
     />
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <style>
       :root {
         --purple: #5B3A9D;
@@ -1045,7 +1046,7 @@
             </div>
             ${job.pay ? `<div class="job-preview-pay">${escapeHtml(job.pay)}</div>` : ''}
           </div>
-          ${job.description ? `<div class="job-preview-description">${escapeHtml(job.description)}</div>` : ''}
+          ${job.description ? `<div class="job-preview-description">${DOMPurify.sanitize(job.description)}</div>` : ''}
           <div class="job-preview-tags">
             ${job.vehicle_requirements ? `<span class="job-tag">${escapeHtml(job.vehicle_requirements)}</span>` : ''}
             ${job.insurance_requirement ? `<span class="job-tag">${escapeHtml(job.insurance_requirement)}</span>` : ''}
