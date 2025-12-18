@@ -79,7 +79,7 @@ async function fetchUserJobFromPostgres(jobId) {
       `SELECT
         id, title, company, city, state, postalcode, address, description, pay,
         general_requirements, benefits, vehicle_requirements, insurance_requirement,
-        certifications_required, schedule_details, submitted_at
+        certifications_required, schedule_details, submitted_at, job_url
        FROM user_submitted_jobs
        WHERE id = $1
          AND hidden = false
@@ -99,7 +99,7 @@ function fetchUserJobFromSqlite(jobId) {
     SELECT
       id, title, company, city, state, postalcode, address, description, pay,
       general_requirements, benefits, vehicle_requirements, insurance_requirement,
-      certifications_required, schedule_details, submitted_at
+      certifications_required, schedule_details, submitted_at, job_url
     FROM jobs
     WHERE id = ?
       AND hidden = 0
@@ -140,6 +140,8 @@ function renderJobDetailPage(job) {
     .badge-cert { background: #fef3c7; color: #92400e; }
     .back-link { display: inline-block; margin-bottom: 20px; color: #3b82f6; text-decoration: none; font-weight: 500; }
     .back-link:hover { text-decoration: underline; }
+    .apply-btn { display: inline-block; background: #22c55e; color: white; padding: 14px 32px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; text-decoration: none; margin: 24px 0; transition: background 0.2s; }
+    .apply-btn:hover { background: #16a34a; }
   </style>
 </head>
 <body>
@@ -147,6 +149,7 @@ function renderJobDetailPage(job) {
     <a href="/" class="back-link">&larr; Back to Job Board</a>
     <h1>${escapeHtml(job.title)}</h1>
     <p class="company">${escapeHtml(job.company)}</p>
+    ${job.job_url ? `<a href="${escapeHtml(job.job_url)}" target="_blank" rel="noopener noreferrer" class="apply-btn">Apply Now</a>` : ''}
     <div class="meta">
       <span class="meta-item">&#128205; ${escapeHtml(locationText)}</span>
       <span class="meta-item">&#128197; Posted ${escapeHtml(formatTimestamp(job.submitted_at))}</span>
