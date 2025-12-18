@@ -2,4 +2,20 @@
 <source>
   <publisher>GigSafe</publisher>
   <publisherurl>https://www.gigsafe.com/</publisherurl>
+  <job>
+    <title><![CDATA[Workflow Test Driver]]></title>
+    <date><![CDATA[2025-12-18 22:10:47]]></date>
+    <referencenumber><![CDATA[9]]></referencenumber>
+    <url><![CDATA[https://gigsafe-jobboard.replit.app/jobs/9]]></url>
+    <company><![CDATA[Test Logistics Co]]></company>
+    <address><![CDATA[]]></address>
+    <city><![CDATA[Austin]]></city>
+    <state><![CDATA[TX]]></state>
+    <country><![CDATA[US]]></country>
+    <postalcode><![CDATA[78701]]></postalcode>
+    <description><![CDATA[Testing that job posts go to PostgreSQL user_submitted_jobs]]></description>
+    <jobtype><![CDATA[Pt. Time/Contract]]></jobtype>
+    <category><![CDATA[Logistics]]></category>
+    <notification><![CDATA[jimmy@gigsafe.com]]></notification>
+  </job>
 </source>
