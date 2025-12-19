@@ -1534,21 +1534,42 @@ app.get('/api/admin/check', (req, res) => {
 
 // Backfill jobs to production database
 app.post('/api/admin/backfill-production', requireAdmin, async (req, res) => {
-  if (!process.env.DATABASE_URL) {
+  const devUrl = process.env.DATABASE_URL;
+  const prodUrl = process.env.PRODUCTION_DATABASE_URL;
+  
+  if (!devUrl) {
     return res.status(400).json({ success: false, error: 'No DATABASE_URL configured' });
   }
-  if (!process.env.PRODUCTION_DATABASE_URL) {
+  if (!prodUrl) {
     return res.status(400).json({ success: false, error: 'No PRODUCTION_DATABASE_URL configured' });
   }
   
-  const client = createPgClient(false); // Dev database
+  // Force connect to dev database directly (bypass createPgClient which may use prod in deployment)
+  const useSSL = !devUrl.includes('localhost') && !devUrl.includes('127.0.0.1') && !devUrl.includes('helium');
+  const devClient = new Client({ 
+    connectionString: devUrl,
+    ssl: useSSL ? { rejectUnauthorized: false } : false
+  });
+  
   try {
-    await client.connect();
-    const result = await client.query(`
-      SELECT * FROM user_submitted_jobs 
-      WHERE hidden = false 
-      AND (admin_keep_visible = true OR submitted_at > NOW() - INTERVAL '24 hours')
-    `);
+    await devClient.connect();
+    
+    // Get specific job IDs from request body, or all visible jobs if none specified
+    const jobIds = req.body.jobIds;
+    let result;
+    
+    if (jobIds && Array.isArray(jobIds) && jobIds.length > 0) {
+      // Backfill specific jobs by ID (for legacy jobs like 11, 12)
+      result = await devClient.query(
+        `SELECT * FROM user_submitted_jobs WHERE id = ANY($1)`,
+        [jobIds]
+      );
+    } else {
+      // Backfill all non-hidden jobs (includes legacy jobs with admin_keep_visible)
+      result = await devClient.query(
+        `SELECT * FROM user_submitted_jobs WHERE hidden = false`
+      );
+    }
     
     const jobs = result.rows;
     const results = { success: [], failed: [] };
@@ -1571,7 +1592,7 @@ app.post('/api/admin/backfill-production', requireAdmin, async (req, res) => {
     console.error('[backfill] Error:', err.message);
     res.status(500).json({ success: false, error: err.message });
   } finally {
-    try { await client.end(); } catch (e) {}
+    try { await devClient.end(); } catch (e) {}
   }
 });
 
