@@ -617,14 +617,21 @@ function buildWhereClause(filters, params) {
 
 app.get('/jobs/:id', async (req, res) => {
   const jobId = Number.parseInt(req.params.id);
-  if (!jobId || Number.isNaN(jobId)) return res.status(404).send('Job not found');
+  console.log(`[job-detail] Request for job ID: ${jobId}, DATABASE_URL set: ${!!process.env.DATABASE_URL}`);
+  if (!jobId || Number.isNaN(jobId)) {
+    console.log(`[job-detail] Invalid job ID: ${req.params.id}`);
+    return res.status(404).send('Job not found');
+  }
   try {
+    console.log(`[job-detail] Fetching job ${jobId} from ${process.env.DATABASE_URL ? 'PostgreSQL' : 'SQLite'}`);
     const job = process.env.DATABASE_URL ? await fetchUserJobFromPostgres(jobId) : fetchUserJobFromSqlite(jobId);
+    console.log(`[job-detail] Job ${jobId} result:`, job ? `Found - ${job.title}` : 'Not found');
     if (!job) return res.status(404).send('Job not found');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(renderJobDetailPage(job));
   } catch (err) {
-    console.error('Error loading job detail page:', err);
+    console.error(`[job-detail] Error loading job ${jobId}:`, err.message);
+    console.error(`[job-detail] Full error:`, err);
     res.status(500).send('Failed to load job');
   }
 });
