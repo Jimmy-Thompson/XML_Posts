@@ -79,10 +79,27 @@ function runXmlExport(reason) {
   child.on('close', code => { xmlExportInProgress = false; if (code !== 0) console.error(`[xml-export] failed with code ${code}`); });
 }
 
+function createPgClient() {
+  const dbUrl = process.env.DATABASE_URL;
+  const useSSL = dbUrl && !dbUrl.includes('localhost') && !dbUrl.includes('127.0.0.1');
+  return new Client({ 
+    connectionString: dbUrl,
+    ssl: useSSL ? { rejectUnauthorized: false } : false
+  });
+}
+
 async function fetchUserJobFromPostgres(jobId) {
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
-  await client.connect();
+  console.log(`[pg-fetch] Starting fetch for job ${jobId}`);
+  console.log(`[pg-fetch] DATABASE_URL exists: ${!!process.env.DATABASE_URL}`);
+  console.log(`[pg-fetch] DATABASE_URL starts with: ${process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 30) + '...' : 'N/A'}`);
+  
+  const client = createPgClient();
+  
   try {
+    console.log(`[pg-fetch] Attempting to connect...`);
+    await client.connect();
+    console.log(`[pg-fetch] Connected successfully`);
+    
     const result = await client.query(
       `SELECT
         id, title, company, city, state, postalcode, address, description, pay,
@@ -95,9 +112,21 @@ async function fetchUserJobFromPostgres(jobId) {
        LIMIT 1`,
       [jobId]
     );
+    console.log(`[pg-fetch] Query completed, rows returned: ${result.rows.length}`);
     return result.rows[0] ?? null;
+  } catch (err) {
+    console.error(`[pg-fetch] Error type: ${err.constructor.name}`);
+    console.error(`[pg-fetch] Error message: ${err.message}`);
+    console.error(`[pg-fetch] Error code: ${err.code}`);
+    console.error(`[pg-fetch] Full error:`, err);
+    throw err;
   } finally {
-    await client.end();
+    try {
+      await client.end();
+      console.log(`[pg-fetch] Connection closed`);
+    } catch (endErr) {
+      console.error(`[pg-fetch] Error closing connection: ${endErr.message}`);
+    }
   }
 }
 
@@ -418,7 +447,13 @@ if (adminPassword.length < 8) {
 }
 
 const SQLiteStore = BetterSqlite3Store(session);
-const sessionDb = new Database(path.join(__dirname, 'outputs', 'sessions.db'));
+const sessionsDbPath = path.join(__dirname, 'outputs', 'sessions.db');
+const sessionsDbDir = path.dirname(sessionsDbPath);
+if (!fs.existsSync(sessionsDbDir)) {
+  fs.mkdirSync(sessionsDbDir, { recursive: true });
+  console.log('[session] Created outputs directory for sessions.db');
+}
+const sessionDb = new Database(sessionsDbPath);
 
 // Determine if we should use secure cookies (HTTPS only)
 // Secure cookies on Replit deployment OR when NODE_ENV=production
@@ -653,7 +688,7 @@ app.get('/api/jobs', async (req, res) => {
     let userJobsCount = 0;
     
     if (process.env.DATABASE_URL) {
-      const pgClient = new Client({ connectionString: process.env.DATABASE_URL });
+      const pgClient = createPgClient();
       await pgClient.connect();
       
       try {
@@ -888,7 +923,7 @@ app.post('/api/jobs', jobPostingLimiter, async (req, res) => {
   const sanitizedSchedule = schedule_details ? sanitizeHTML(schedule_details, 2000) : null;
 
   // Insert into PostgreSQL user_submitted_jobs table
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  const client = createPgClient();
   
   try {
     await client.connect();
@@ -969,7 +1004,7 @@ app.delete('/api/jobs/:id', async (req, res) => {
     });
   }
 
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  const client = createPgClient();
 
   try {
     await client.connect();
@@ -1017,7 +1052,7 @@ app.patch('/api/admin/jobs/:id/hide', requireAdmin, async (req, res) => {
     });
   }
 
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  const client = createPgClient();
 
   try {
     await client.connect();
