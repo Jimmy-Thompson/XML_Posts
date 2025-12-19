@@ -1,0 +1,152 @@
+Distribute XML Specification
+
+Node Definitions
+1. <source>
+*
+: Root element containing publisher information and multiple job listings.
+
+2. <publisher>
+*
+: Name of the publisher providing the job feed.
+
+3. <publisherurl>
+*
+: URL of the publisher's website.
+
+4. <job>
+*
+: Contains individual job details; multiple <job> entries can exist under
+<source>.
+5. <title>
+*
+: Job title, enclosed in CDATA for proper character handling.
+
+6. <date>
+*
+: Publication date in YYYY-MM-DD HH:MM:SS format, indicating when the job
+was first published.
+7. <referencenumber>
+*
+: Unique identifier for each job, consistent across feeds.
+
+8. <url>
+*
+: Permanent, direct link to the job description on the publisher's website.
+
+9. <company>
+*
+: Name of the company hiring for the role.
+
+10. <priority>: Indicates job priority (e.g., "Yes" for high-priority roles).
+11. <address>: Street address of the job location. (Required for OFCCP clients)
+12. <city>
+*
+, <state>
+*
+, <country>
+*
+, <postalcode>
+*
+: Location details for the job.
+
+13. <description>
+*
+: Full job description, formatted with HTML tags for presentation.
+
+14. <jobtype>
+*
+: Employment type (e.g., Full-Time, Temp-to-Hire).
+15. <salary>: Optional field for salary information, if available.
+16. <category>
+*
+: Job category or industry (e.g., Sales, Marketing).
+
+17. <branch>: Internal branch designation for categorization within the publisher’s system.
+18. <owner>: Job owner ID for internal job listings management.
+19. <statewide>: Optional field indicating statewide job availability (can be left empty).
+20. <nationwide>: Specifies if the job is available nationwide (e.g., "Yes" or "No").
+21. <notification>
+*
+: Specify an email address for network job applications (e.g.,
+
+"applications@yourdomain.com").
+Required Fields
+*
+
+XML Feed Requirements
+1. CDATA Usage: Enclose all job content in CDATA sections to better handle special
+characters.
+2. Incremental Updates: Include all open jobs in each feed submission. Exclude jobs no
+longer open, as they will be removed from search results.
+3. Unique Reference Numbers: Use unique <referencenumber> values for each job to
+ensure accurate identification.
+4. Publication Date: Use <date> to specify when the job was first made public.
+Acceptable & Fair Usage Policies
+1. Permanent URLs: Ensure each <url> is a direct link to the job description without login
+or payment requirements. A login may be required for the application process.
+2. Original Jobs Only: Include jobs unique to your website, avoiding postings from other
+job boards or companies.
+3. No Expired Jobs: Only include active, open jobs in your feed.
+4. Reactivation Process: Contact support if your feed becomes inactive for any reason.
+Encoding & Character Handling
+1. Encoding Specification: Ensure correct encoding (UTF-8) is specified in the XML
+header to avoid character issues.
+PLEASE NOTE: We can use almost any feed with these values. The naming structure
+does not have to match if the data is present for correct functionality.
+Please contact us at hello@dstribute.io if you have any questions or require additional
+information.
+
+Below is the XML specification document based on the format and requirements you provided,
+with each node defined, along with XML feed requirements, usage policies, and encoding
+instructions.
+____________________________________________________________________________
+<?xml version="1.0" encoding="UTF-8"?>
+<source>
+<!-- Publisher Information -->
+<publisher>Your Company Name</publisher>
+<!-- Publisher's Website URL -->
+<publisherurl>https://www.yourcompanyname.com</publisherurl>
+<job>
+<!-- Job Title -->
+<title><![CDATA[ Your Company Name ]]></title>
+<!-- Publication Date -->
+<date><![CDATA[ 2024-11-07 21:06:18 ]]></date>
+<!-- Unique Job Reference Number -->
+<referencenumber><![CDATA[ 5573 ]]></referencenumber>
+<!-- Direct Link to Job Posting -->
+<url><![CDATA[
+https://www.yourcompanyname.com/job/5573-staffing-account-ex
+ecutive-knoxville-tn/ ]]></url>
+<!-- Hiring Company Name -->
+<company><![CDATA[ Your Company Name ]]></company>
+<!-- Job Priority (Yes/No) -->
+<priority><![CDATA[ No ]]></priority>
+
+<!-- Street Address of the Job Location -->
+<address><![CDATA[ 123 ABC Street ]]></address>
+<!-- Job Location Details -->
+<city><![CDATA[ Knoxville ]]></city>
+<state><![CDATA[ TN ]]></state>
+<country><![CDATA[ US ]]></country>
+
+<postalcode><![CDATA[ 37928 ]]></postalcode>
+<!-- Job Description with Formatting Tags -->
+<description><![CDATA[ HTML Description ]]></description>
+<!-- Type of Employment (e.g., Full-Time, Temp-to-Hire) -->
+<jobtype><![CDATA[ Temp-to-Hire ]]></jobtype>
+<!-- Salary Information (Optional) -->
+<salary/>
+<!-- Job Category -->
+<category><![CDATA[ Sales ]]></category>
+<!-- Internal Branch Information -->
+<branch><![CDATA[ USWF ]]></branch>
+<!-- Job Owner ID (Internal Use) -->
+<owner><![CDATA[ 254519 ]]></owner>
+<!-- Job Availability Statewide (Optional) -->
+<statewide><![CDATA[ No ]]></statewide>
+<!-- Nationwide Availability (Yes/No) -->
+<nationwide><![CDATA[ No ]]></nationwide>
+<!-- Notification Email -->
+<notification><![CDATA[ email@youremail.com ]]></notification>
+</job>
+</source>
