@@ -22,7 +22,14 @@ The project uses a unified Express.js server that handles both static frontend a
 -   **Security:** Includes measures like password validation for admin access, strict CORS configuration for production, session cookie security enhancements, and secure handling of sensitive data.
 
 ### Database Schema (Key Tables)
+
+#### PostgreSQL (user_submitted_jobs)
+-   **user_submitted_jobs table:** Contains `id` (serial primary key), `title`, `company`, `city`, `state`, `postalcode`, `address`, `description`, `pay`, `general_requirements`, `benefits`, `vehicle_requirements`, `insurance_requirement`, `certifications_required`, `schedule_details`, `submitted_at`, `job_url`, `hidden` (boolean), `admin_keep_visible` (boolean, default false - when true, job stays visible indefinitely regardless of 24-hour expiration).
+
+#### SQLite (scraped jobs)
 -   **jobs table:** Contains `id` (stable hash), `submitted_at`, `hidden`, `certifications_required`, `job_url`, `title`, `company`, `city`, `state`, `description`, `vehicle_requirements`, and other job-related fields.
+
+#### Other Tables
 -   **subscribers:** Stores email subscriptions.
 -   **subscriber_certifications:** Links certification files to subscribers.
 -   **analytics_events:** Records event type, data, and session ID for tracking user interactions.

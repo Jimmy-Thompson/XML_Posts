@@ -71,7 +71,7 @@ async function main() {
       postalcode
     FROM user_submitted_jobs
     WHERE hidden = false
-      AND (submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')
+      AND (admin_keep_visible = true OR submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')
     ORDER BY submitted_at DESC, id DESC
   `);
 

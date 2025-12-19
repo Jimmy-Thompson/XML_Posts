@@ -91,7 +91,7 @@ async function fetchUserJobFromPostgres(jobId) {
        FROM user_submitted_jobs
        WHERE id = $1
          AND hidden = false
-         AND (submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')
+         AND (admin_keep_visible = true OR submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')
        LIMIT 1`,
       [jobId]
     );
@@ -655,8 +655,8 @@ app.get('/api/jobs', async (req, res) => {
         let pgParams = [];
         let paramIndex = 1;
         
-        // 24-hour freshness filter for user jobs
-        pgWhereConditions.push(`(submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')`);
+        // 24-hour freshness filter for user jobs (unless admin_keep_visible is set)
+        pgWhereConditions.push(`(admin_keep_visible = true OR submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')`);
         
         if (filters.keyword) {
           pgWhereConditions.push(`(
