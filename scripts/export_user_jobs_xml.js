@@ -71,7 +71,6 @@ async function main() {
       postalcode
     FROM user_submitted_jobs
     WHERE hidden = false
-      AND (admin_keep_visible = true OR submitted_at IS NULL OR submitted_at > NOW() - INTERVAL '24 hours')
     ORDER BY submitted_at DESC, id DESC
   `);
 
@@ -104,7 +103,7 @@ async function main() {
     lines.push(`    <date>${cdata(formatDate(job.submitted_at))}</date>`);
     lines.push(`    <referencenumber>${cdata(job.id)}</referencenumber>`);
     lines.push(`    <url>${cdata(jobUrl)}</url>`);
-    lines.push(`    <company>${cdata(job.company)}</company>`);
+    lines.push(`    <company>${cdata('GigSafe')}</company>`);
     lines.push(`    <priority>${cdata('No')}</priority>`);
     lines.push(`    <address>${cdata(job.address ?? '')}</address>`);
     lines.push(`    <city>${cdata(job.city)}</city>`);

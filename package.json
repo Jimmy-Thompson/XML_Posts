@@ -5,36 +5,17 @@
   "type": "module",
   "scripts": {
     "start": "node api-server.js",
-    "dev": "http-server App -p 8000 -a 0.0.0.0 -o /landing.html --cors",
     "api": "node api-server.js",
-    "export:user-xml": "node scripts/export_user_jobs_xml.js",
-    "scrape:all": "tsx scripts/run_all.ts --all",
-    "scrape:resume": "tsx scripts/run_all.ts --resume",
-    "scrape:resume-failed": "tsx scripts/run_all.ts --resume --only-failed"
+    "export:user-xml": "node scripts/export_user_jobs_xml.js"
   },
   "dependencies": {
-    "better-sqlite3": "^12.4.1",
-    "better-sqlite3-session-store": "^0.1.0",
-    "bottleneck": "^2.19.5",
-    "cors": "^2.8.5",
     "dompurify": "^3.3.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.1",
-    "express-session": "^1.18.2",
     "helmet": "^8.1.0",
     "jsdom": "^27.1.0",
-    "multer": "^2.0.2",
     "pg": "^8.13.1"
-  },
-  "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^24.10.1",
-    "concurrently": "^9.2.1",
-    "http-server": "^14.1.1",
-    "playwright": "^1.56.1",
-    "puppeteer": "^24.29.1",
-    "typescript": "^5.9.3"
   },
   "keywords": [
     "job-board",
