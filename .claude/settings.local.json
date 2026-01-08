@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run export:user-xml:*)",
+      "Bash(DB_URL=\"$DATABASE_URL\" npm run export:user-xml)",
+      "Bash(node:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

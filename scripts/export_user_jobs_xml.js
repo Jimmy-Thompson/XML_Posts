@@ -2,9 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Client } from 'pg';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load .env file from parent directory
+dotenv.config({ path: path.join(__dirname, '..', '.env'), override: true });
 
 const config = {
   publisher: process.env.XML_PUBLISHER ?? 'GigSafe',
@@ -51,11 +55,12 @@ warnIfDefault('XML_DEFAULT_CATEGORY', config.category, 'Logistics');
 warnIfDefault('XML_BASE_URL', config.baseUrl, 'https://gigsafe-jobboard.replit.app');
 
 async function main() {
-  if (!process.env.DB_URL) {
-    throw new Error('DB_URL is required to export the XML feed.');
+  const dbUrl = process.env.DB_URL || process.env.DATABASE_URL;
+  if (!dbUrl) {
+    throw new Error('DB_URL or DATABASE_URL is required to export the XML feed.');
   }
 
-  const client = new Client({ connectionString: process.env.DB_URL });
+  const client = new Client({ connectionString: dbUrl });
   await client.connect();
 
   const result = await client.query(`
